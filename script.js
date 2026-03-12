@@ -1,219 +1,437 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Rolagem suave para links de navegação
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      e.preventDefault()
+const sports = [
+    { text: "futevôlei", icon: "img/bola-fut.png" },
+    { text: "beach tennis", icon: "img/bola-tennis.png" },
+    { text: "vôlei", icon: "img/bola-volei.png" },
+    { text: "tênis", icon: "img/bola-tennis.png" }
+];
 
-      const targetId = this.getAttribute("href")
-      const targetElement = document.querySelector(targetId)
-      const headerOffset = document.querySelector(".header").offsetHeight
-      const offsetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset - 20
+const rotatingContent = document.getElementById("rotating-content");
+const rotatingText = document.getElementById("rotating-text");
+const rotatingIcon = document.getElementById("rotating-icon");
+let currentIndex = 0;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      })
-    })
-  })
+function rotateText() {
+    // Primeiro aplicamos a classe de saída
+    rotatingContent.classList.remove("enter");
+    rotatingContent.classList.add("exit");
 
-  // Rolagem para o topo ao clicar na logo
-  document.querySelector(".nav-logo-link").addEventListener("click", (e) => {
-    e.preventDefault()
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    })
-  })
+    setTimeout(() => {
+        // Atualizamos o conteúdo após a animação de saída
+        currentIndex = (currentIndex + 1) % sports.length;
+        rotatingText.textContent = sports[currentIndex].text;
+        rotatingIcon.src = sports[currentIndex].icon;
 
-  // Expansão do Cartão do Catálogo
-  const expandButtons = document.querySelectorAll(".catalog-card .expand-button")
+        // Resetamos a posição sem transição para o próximo entrar de baixo
+        rotatingContent.style.transition = 'none';
+        rotatingContent.style.transform = 'translateY(100%)';
+        rotatingContent.classList.remove("exit");
 
-  expandButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const card = button.closest(".catalog-card")
-      const isCurrentlyExpanded = card.classList.contains("expanded")
+        // Forçamos um reflow
+        void rotatingContent.offsetWidth;
 
-      // Fecha todos os outros cartões abertos
-      document.querySelectorAll(".catalog-card.expanded").forEach((openCard) => {
-        if (openCard !== card) {
-          openCard.classList.remove("expanded")
-          openCard.querySelector(".expand-button").classList.remove("active")
-          openCard.querySelector(".expand-button").setAttribute("aria-expanded", "false")
+        // Reativamos a transição e aplicamos a classe de entrada
+        rotatingContent.style.transition = '';
+        rotatingContent.style.transform = '';
+        rotatingContent.classList.add("enter");
+    }, 400);
+}
+
+// Inicializa a rotação a cada 2 segundos (ciclo mais calmo)
+setInterval(rotateText, 2000);
+
+// Esconder indicador de scroll ao descer
+window.addEventListener('scroll', () => {
+    const scroll = window.scrollY;
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    
+    if (scrollIndicator) {
+        if (scroll > 100) {
+            scrollIndicator.style.opacity = '0';
+            scrollIndicator.style.pointerEvents = 'none';
+        } else {
+            scrollIndicator.style.opacity = '0.7';
+            scrollIndicator.style.pointerEvents = 'all';
         }
-      })
-
-      // Alterna o estado do cartão clicado
-      if (!isCurrentlyExpanded) {
-        card.classList.add("expanded")
-        button.classList.add("active")
-        button.setAttribute("aria-expanded", "true")
-      } else {
-        card.classList.remove("expanded")
-        button.classList.remove("active")
-        button.setAttribute("aria-expanded", "false")
-      }
-    })
-  })
-
-  // Acordeão de FAQ
-  const faqQuestions = document.querySelectorAll(".faq-question")
-
-  faqQuestions.forEach((question) => {
-    question.addEventListener("click", () => {
-      const faqItem = question.closest(".faq-item")
-      const faqAnswer = faqItem.querySelector(".faq-answer")
-
-      // Verifica se a pergunta clicada já está ativa
-      const isCurrentlyActive = question.classList.contains("active")
-
-      // Fecha todas as outras respostas abertas
-      faqQuestions.forEach((otherQuestion) => {
-        if (otherQuestion !== question && otherQuestion.classList.contains("active")) {
-          otherQuestion.classList.remove("active")
-          otherQuestion.setAttribute("aria-expanded", "false")
-          otherQuestion.closest(".faq-item").querySelector(".faq-answer").classList.remove("active")
-        }
-      })
-
-      // Se a pergunta clicada não estava ativa, ative-a
-      if (!isCurrentlyActive) {
-        question.classList.add("active")
-        faqAnswer.classList.add("active")
-        question.setAttribute("aria-expanded", "true")
-      }
-    })
-  })
-
-  // Animações de Seção ao Rolar (Intersection Observer)
-  const animatedSections = document.querySelectorAll(".animated-section")
-
-  const observerOptions = {
-    root: null, // viewport como raiz
-    rootMargin: "0px",
-    threshold: 0.2, // 20% da seção visível para animar
-  }
-
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible")
-      } else {
-        entry.target.classList.remove("visible")
-      }
-    })
-  }, observerOptions)
-
-  animatedSections.forEach((section) => {
-    observer.observe(section)
-  })
-
-  // Lógica do Cursor Personalizado
-  const customCursor = document.querySelector(".custom-cursor")
-  const footerSection = document.querySelector(".footer-section") // Obtém referência ao rodapé
-
-  let currentX = 0
-  let currentY = 0
-  let targetX = 0
-  let targetY = 0
-
-  // Define o fator de interpolação (quão rápido o cursor alcança)
-  const lerpFactor = 0.1
-
-  // Função para atualizar a posição do cursor
-  function animateCursor() {
-    // Interpola a posição atual em direção à posição alvo
-    currentX += (targetX - currentX) * lerpFactor
-    currentY += (targetY - currentY) * lerpFactor
-
-    // Aplica a posição interpolada usando transform para melhor desempenho
-    customCursor.style.transform = `translate(-50%, -50%) translate(${currentX}px, ${currentY}px)`
-
-    // Solicita o próximo quadro
-    requestAnimationFrame(animateCursor)
-  }
-
-  // Inicia o loop de animação
-  animateCursor()
-
-  // Atualiza a posição alvo no movimento do mouse
-  document.addEventListener("mousemove", (e) => {
-    targetX = e.clientX
-    targetY = e.clientY
-
-    // Determina se o mouse está sobre um elemento interativo
-    const isOverInteractive = e.target.closest("a, button, .nav-link, .catalog-card, .number-card, .faq-item")
-
-    // Determina se o mouse está sobre o rodapé
-    const isOverFooter = footerSection && footerSection.contains(e.target)
-
-    // Aplica o estilo do cursor com base nas condições
-    if (isOverFooter) {
-      customCursor.style.backgroundColor = "white" // Branco no rodapé escuro
-      customCursor.style.width = isOverInteractive ? "20px" : "10px"
-      customCursor.style.height = isOverInteractive ? "20px" : "10px"
-    } else if (isOverInteractive) {
-      customCursor.style.backgroundColor = "var(--cor-destaque)" // Cor de destaque em elementos interativos
-      customCursor.style.width = "20px"
-      customCursor.style.height = "20px"
-    } else {
-      customCursor.style.backgroundColor = "var(--cor-texto-principal)" // Preto padrão
-      customCursor.style.width = "10px"
-      customCursor.style.height = "10px"
     }
-  })
+});
 
-  // Animação dos cards da seção "Números" ao rolar
-  const numberCards = document.querySelectorAll(".numbers-grid .number-card")
+// Efeito de Zoom e Fade no Hero ao scrollar
+window.addEventListener('scroll', () => {
+    const scroll = window.scrollY;
+    const heroBg = document.querySelector('.hero-bg');
+    const heroContent = document.querySelector('.hero-content');
+    
+    if (heroBg && heroContent) {
+        // Zoom sutil: escala de 1 a 1.15 baseada no scroll (limite de 500px)
+        const zoomScale = 1 + (Math.min(scroll, 500) / 500) * 0.15;
+        heroBg.style.transform = `scale(${zoomScale})`;
+        
+        // Fade out sutil: opacidade de 1 a 0 baseada no scroll (limite de 400px)
+        const opacity = 1 - (Math.min(scroll, 400) / 400);
+        heroContent.style.opacity = opacity;
+        
+        // Deslocamento sutil para cima (parallax reverso)
+        heroContent.style.transform = `translateY(${-scroll * 0.2}px)`;
+    }
+});
 
-  const numberCardObserverOptions = {
-    root: null,
-    rootMargin: "0px",
-    threshold: 0.5, // 50% do card visível para animar
-  }
+// Animação de Revelação no Scroll (Galeria)
+const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+};
 
-  const numberCardObserver = new IntersectionObserver((entries, observer) => {
+const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible")
-        observer.unobserve(entry.target) // Para animar apenas uma vez
-      }
-    })
-  }, numberCardObserverOptions)
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // Uma vez visível, para de observar para economizar recursos
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
 
-  numberCards.forEach((card, index) => {
-    card.style.transitionDelay = `${index * 0.15}s` // Atraso escalonado
-    numberCardObserver.observe(card)
-  })
+document.addEventListener('DOMContentLoaded', () => {
+    const galleryItems = document.querySelectorAll('.reveal-scroll');
+    galleryItems.forEach((item, index) => {
+        // Remove transition delay for immediate effect if needed, or keep it short
+        observer.observe(item);
+    });
+});
 
-  // Lógica do Menu Mobile
-  const mobileMenuButton = document.querySelector(".mobile-menu-button")
-  const closeMenuButton = document.querySelector(".close-menu-button")
-  const mobileNavOverlay = document.querySelector(".mobile-nav-overlay")
-  const mobileNavLinks = document.querySelectorAll(".mobile-nav-link")
+// Lógica da Galeria / Lightbox
+document.addEventListener('DOMContentLoaded', () => {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.querySelector('.lightbox-close');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+    const galleryItems = document.querySelectorAll('.gallery-item img');
+    
+    let currentImgIndex = 0;
+    const images = Array.from(galleryItems).map(img => img.src);
 
-  if (mobileMenuButton && mobileNavOverlay && closeMenuButton) {
-    mobileMenuButton.addEventListener("click", () => {
-      mobileNavOverlay.classList.add("open")
-      document.body.style.overflow = "hidden" // Previne rolagem do corpo
-    })
+    // Abrir Lightbox
+    galleryItems.forEach((img, index) => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => {
+            currentImgIndex = index;
+            updateLightbox();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Trava scroll
+        });
+    });
 
-    closeMenuButton.addEventListener("click", () => {
-      mobileNavOverlay.classList.remove("open")
-      document.body.style.overflow = "" // Restaura rolagem do corpo
-    })
+    function updateLightbox() {
+        lightboxImg.src = images[currentImgIndex];
+    }
 
-    mobileNavOverlay.addEventListener("click", (e) => {
-      if (e.target === mobileNavOverlay) {
-        mobileNavOverlay.classList.remove("open")
-        document.body.style.overflow = ""
-      }
-    })
+    // Navegação
+    function showNext() {
+        currentImgIndex = (currentImgIndex + 1) % images.length;
+        updateLightbox();
+    }
 
-    mobileNavLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        mobileNavOverlay.classList.remove("open")
-        document.body.style.overflow = ""
-      })
-    })
-  }
-})
+    function showPrev() {
+        currentImgIndex = (currentImgIndex - 1 + images.length) % images.length;
+        updateLightbox();
+    }
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNext();
+    });
+
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showPrev();
+    });
+
+    // Fechar
+    lightboxClose.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = ''; // Destrava scroll
+    });
+
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Teclado
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'ArrowRight') showNext();
+        if (e.key === 'ArrowLeft') showPrev();
+        if (e.key === 'Escape') {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Suporte a Swipe (Mobile)
+    let touchstartX = 0;
+    let touchendX = 0;
+
+    lightbox.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX;
+    });
+
+    lightbox.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        handleGesture();
+    });
+
+    function handleGesture() {
+        if (touchendX < touchstartX - 50) showNext();
+        if (touchendX > touchstartX + 50) showPrev();
+    }
+});
+
+// Lógica do Slider do Catálogo (Estilo Apple)
+document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('catalog-slider');
+    const prevBtn = document.getElementById('catalog-prev');
+    const nextBtn = document.getElementById('catalog-next');
+    const progressBar = document.getElementById('catalog-progress');
+
+    if (!slider || !prevBtn || !nextBtn || !progressBar) return;
+
+    const updateProgress = () => {
+        const scrollPercentage = (slider.scrollLeft / (slider.scrollWidth - slider.clientWidth)) * 100;
+        progressBar.style.width = `${Math.max(0, Math.min(100, scrollPercentage))}%`;
+        
+        // Desabilitar botões nos limites
+        prevBtn.style.opacity = slider.scrollLeft <= 5 ? '0.3' : '1';
+        prevBtn.style.pointerEvents = slider.scrollLeft <= 5 ? 'none' : 'auto';
+        
+        const isAtEnd = slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5;
+        nextBtn.style.opacity = isAtEnd ? '0.3' : '1';
+        nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+    };
+
+    slider.addEventListener('scroll', updateProgress);
+    window.addEventListener('resize', updateProgress);
+
+    nextBtn.addEventListener('click', () => {
+        const cardWidth = slider.querySelector('.catalog-card').offsetWidth + 30;
+        slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        const cardWidth = slider.querySelector('.catalog-card').offsetWidth + 30;
+        slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    });
+
+    // Suporte a arraste no desktop
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('active');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+        slider.style.scrollBehavior = 'auto'; // Desativa smooth durante o drag
+        slider.style.scrollSnapType = 'none'; // Desativa snap durante o drag
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        if (!isDown) return;
+        isDown = false;
+        slider.style.scrollBehavior = 'smooth';
+        slider.style.scrollSnapType = 'x mandatory';
+    });
+
+    slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.style.scrollBehavior = 'smooth';
+        slider.style.scrollSnapType = 'x mandatory';
+    });
+
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2;
+        slider.scrollLeft = scrollLeft - walk;
+    });
+
+    // Inicializa progresso
+    updateProgress();
+});
+
+// Alternância suave de imagens nos cards do catálogo
+document.addEventListener('DOMContentLoaded', () => {
+    const rotatingContainers = document.querySelectorAll('.rotating-images');
+    
+    rotatingContainers.forEach(container => {
+        const images = container.querySelectorAll('.card-img');
+        if (images.length < 2) return;
+
+        let currentImgIndex = 0;
+
+        setInterval(() => {
+            images[currentImgIndex].classList.remove('active');
+            currentImgIndex = (currentImgIndex + 1) % images.length;
+            images[currentImgIndex].classList.add('active');
+        }, 3500); // Troca a cada 3.5 segundos para ser suave
+    });
+});
+
+// Lógica do FAQ (Accordion)
+document.addEventListener('DOMContentLoaded', () => {
+    const faqQuestions = document.querySelectorAll('.faq-question');
+
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+            const faqItem = question.parentElement;
+            const isActive = faqItem.classList.contains('active');
+
+            // Fecha outros itens abertos (opcional, mas recomendado para UX limpa)
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Se o item clicado não estava ativo, abre ele
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        });
+    });
+});
+
+// Lógica do Slider do Catálogo
+document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('catalog-slider');
+    const prevBtn = document.getElementById('catalog-prev');
+    const nextBtn = document.getElementById('catalog-next');
+    const progressBar = document.getElementById('catalog-progress');
+
+    if (!slider || !prevBtn || !nextBtn || !progressBar) return;
+
+    const scrollAmount = 480; // Largura do card (450) + gap (30)
+
+    nextBtn.addEventListener('click', () => {
+        slider.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        slider.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+
+    // Atualiza a barra de progresso e o estado dos botões
+    slider.addEventListener('scroll', () => {
+        const scrollPercentage = (slider.scrollLeft / (slider.scrollWidth - slider.clientWidth)) * 100;
+        progressBar.style.width = `${scrollPercentage}%`;
+
+        // Opcional: Desativar botões nos limites
+        prevBtn.style.opacity = slider.scrollLeft <= 0 ? '0.3' : '1';
+        prevBtn.style.pointerEvents = slider.scrollLeft <= 0 ? 'none' : 'auto';
+        
+        const atEnd = slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5;
+        nextBtn.style.opacity = atEnd ? '0.3' : '1';
+        nextBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
+    });
+
+    // Inicializa o estado dos botões
+    prevBtn.style.opacity = '0.3';
+    prevBtn.style.pointerEvents = 'none';
+});
+
+// Animação de Contagem dos Números
+ document.addEventListener('DOMContentLoaded', () => {
+     const numbersSection = document.getElementById('numeros');
+     if (!numbersSection) return;
+
+     const animateNumbers = (entries, observer) => {
+         entries.forEach(entry => {
+             if (entry.isIntersecting) {
+                 const counters = entry.target.querySelectorAll('.stat-value[data-goal]');
+                 
+                 counters.forEach(counter => {
+                     const goal = parseInt(counter.getAttribute('data-goal'));
+                     const originalText = counter.textContent;
+                     let current = 0;
+                     const increment = goal / 100;
+
+                     const updateCounter = () => {
+                         current += increment;
+                         if (current < goal) {
+                             // Substitui o número no texto original preservando prefixos e sufixos
+                             counter.textContent = originalText.replace(/\d+/, Math.ceil(current));
+                             
+                             if (originalText.includes('%')) {
+                                 // Atualiza o círculo de progresso se existir
+                                 const circle = counter.parentElement.querySelector('#circle-satisfaction');
+                                 if (circle) {
+                                     const circumference = 2 * Math.PI * 45;
+                                     const offset = circumference - (current / 100) * circumference;
+                                     circle.style.strokeDashoffset = offset;
+                                 }
+                             }
+                             requestAnimationFrame(updateCounter);
+                         } else {
+                             counter.textContent = originalText.replace(/\d+/, goal);
+                             
+                             if (originalText.includes('%')) {
+                                 const circle = counter.parentElement.querySelector('#circle-satisfaction');
+                                 if (circle) {
+                                     const circumference = 2 * Math.PI * 45;
+                                     const offset = circumference - (goal / 100) * circumference;
+                                     circle.style.strokeDashoffset = offset;
+                                 }
+                             }
+                         }
+                     };
+                     updateCounter();
+                 });
+                 observer.unobserve(entry.target); // Anima apenas uma vez
+             }
+         });
+     };
+
+     const numberObserver = new IntersectionObserver(animateNumbers, {
+         threshold: 0.5 // Inicia quando 50% da seção estiver visível
+     });
+
+     numberObserver.observe(numbersSection);
+ });
+
+ // Efeito de Tilt 3D e Mouse Glow nos Cards de Estatística
+ document.addEventListener('DOMContentLoaded', () => {
+     const cards = document.querySelectorAll('.stat-card.glass');
+     
+     cards.forEach(card => {
+         card.addEventListener('mousemove', e => {
+             const rect = card.getBoundingClientRect();
+             const x = e.clientX - rect.left;
+             const y = e.clientY - rect.top;
+             
+             // Atualiza as variáveis CSS para o Mouse Glow
+             card.style.setProperty('--mouse-x', `${x}px`);
+             card.style.setProperty('--mouse-y', `${y}px`);
+             
+             // Calcula a rotação para o Tilt 3D
+             const centerX = rect.width / 2;
+             const centerY = rect.height / 2;
+             const rotateX = (y - centerY) / 10;
+             const rotateY = (centerX - x) / 10;
+             
+             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.03)`;
+         });
+         
+         card.addEventListener('mouseleave', () => {
+             card.style.transform = '';
+         });
+     });
+ });
