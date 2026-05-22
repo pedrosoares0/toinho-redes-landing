@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Avenue';
-  src: url('/fonts/AvenueRegular-R9e2M.otf') format('opentype');
+  src: url('fonts/AvenueRegular-R9e2M.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: 'BehindTheNineties';
-  src: url('/fonts/BehindTheNineties.ttf') format('truetype');
+  src: url('fonts/BehindTheNineties.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;

@@ -11,7 +11,7 @@ const products = [
     badgeTop: 'MODELO',
     description: 'Rede profissional com tripla camada de reforço para máxima resistência.',
     material: '100% NYLON',
-    images: ['/3faixas3.png']
+    images: ['3faixas3.png']
   },
   {
     name: '4 Faixas',
@@ -19,7 +19,7 @@ const products = [
     badgeTop: 'PREMIUM',
     description: 'O máximo em durabilidade e tensão para jogos intensos e profissionais.',
     material: '100% NYLON',
-    images: ['/4faixas.png', '/4faixas2.png']
+    images: ['4faixas.png', '4faixas2.png']
   },
   {
     name: 'Orelha',

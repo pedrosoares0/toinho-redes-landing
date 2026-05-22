@@ -40,11 +40,11 @@ export default function Hero() {
           repeatType: "reverse" 
         }}
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/bgherolight.png')" }}
+        style={{ backgroundImage: "url('bgherolight.png')" }}
       />
       
       <PillNav 
-        logo="/favicon.png"
+        logo="favicon.png"
         logoAlt="Toinho Redes"
         items={navItems}
         baseColor="#0732C1"

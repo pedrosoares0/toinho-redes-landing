@@ -10,42 +10,42 @@ const InteractiveSelector = () => {
       title: "Arena Profissional",
       location: "Salvador, BA",
       description: "Instalação de elite com rede oficial de futevôlei.",
-      image: "/foto (1).jpeg",
+      image: "foto (1).jpeg",
       icon: <FaTrophy size={20} className="text-white" />
     },
     {
       title: "Quadra Premium",
       location: "Lauro de Freitas, BA",
       description: "Redes personalizadas para clubes de alto padrão.",
-      image: "/foto (5).png",
+      image: "foto (5).png",
       icon: <FaStar size={20} className="text-white" />
     },
     {
       title: "Beach Tennis",
       location: "Costa do Sauípe, BA",
       description: "Durabilidade absoluta para o litoral baiano.",
-      image: "/foto (8).png",
+      image: "foto (8).png",
       icon: <FaMapMarkerAlt size={20} className="text-white" />
     },
     {
       title: "Centro de Treinamento",
       location: "Feira de Santana, BA",
       description: "Equipamento para atletas de alto rendimento.",
-      image: "/3faixas3.png",
+      image: "3faixas3.png",
       icon: <FaDumbbell size={20} className="text-white" />
     },
     {
       title: "Arena Cross",
       location: "Camaçari, BA",
       description: "Redes ultra-reforçadas para uso intenso.",
-      image: "/4faixas.png",
+      image: "4faixas.png",
       icon: <FaShieldAlt size={20} className="text-white" />
     },
     {
       title: "Vôlei de Praia",
       location: "Ilhéus, BA",
       description: "A melhor tecnologia em absorção de impacto.",
-      image: "/4faixas2.png",
+      image: "4faixas2.png",
       icon: <FaExpandAlt size={20} className="text-white" />
     }
   ];

@@ -2,17 +2,17 @@ import { Sparkles } from "./ui/Sparkles";
 import { motion } from "framer-motion";
 export default function Partners() {
   const partners = [
-    { name: 'Amstel', logo: '/logo-amstel.png' },
-    { name: 'Caffeine', logo: '/logo-caffeine.png' },
-    { name: 'Clube', logo: '/logo-clube.png' },
-    { name: 'Corona', logo: '/logo-corona.png' },
-    { name: 'Gatorade', logo: '/logo-gatorade.png' },
-    { name: 'Nu', logo: '/logo-nu.png' },
-    { name: 'Mikasa', logo: '/logo-mikasa.png' },
-    { name: 'Sol', logo: '/logo-sol.png' },
-    { name: 'Vitória', logo: '/logo-vitoria.png' },
-    { name: 'Sudesb', logo: '/logo-sudesb.png' },
-    { name: 'Fafeb', logo: '/logo-fafeb.png' }
+    { name: 'Amstel', logo: 'logo-amstel.png' },
+    { name: 'Caffeine', logo: 'logo-caffeine.png' },
+    { name: 'Clube', logo: 'logo-clube.png' },
+    { name: 'Corona', logo: 'logo-corona.png' },
+    { name: 'Gatorade', logo: 'logo-gatorade.png' },
+    { name: 'Nu', logo: 'logo-nu.png' },
+    { name: 'Mikasa', logo: 'logo-mikasa.png' },
+    { name: 'Sol', logo: 'logo-sol.png' },
+    { name: 'Vitória', logo: 'logo-vitoria.png' },
+    { name: 'Sudesb', logo: 'logo-sudesb.png' },
+    { name: 'Fafeb', logo: 'logo-fafeb.png' }
   ];
 
   return (

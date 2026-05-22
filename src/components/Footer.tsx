@@ -12,7 +12,7 @@ export default function Footer() {
         className="w-full overflow-hidden mb-16"
       >
         <img 
-          src="/logoToinho.png" 
+          src="logoToinho.png" 
           alt="Toinho Redes" 
           className="w-full h-auto object-contain"
           style={{ width: '100vw' }}
