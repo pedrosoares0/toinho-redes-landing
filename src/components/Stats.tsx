@@ -37,8 +37,8 @@ export default function Stats() {
     <section id="sobre" className="relative w-full">
       <SmoothScrollHero
         scrollHeight={scrollHeight}
-        desktopImage="/sem-titulo-1.png"
-        mobileImage="/sem-titulo-1.png"
+        desktopImage="sem-titulo-1.png"
+        mobileImage="sem-titulo-1.png"
         initialClipPercentage={25}
         finalClipPercentage={75}
       >

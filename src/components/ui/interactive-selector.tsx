@@ -129,15 +129,6 @@ const InteractiveSelector = () => {
                 </p>
               </div>
             </div>
-
-            {/* Vertical title for non-active items */}
-            <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ${
-              activeIndex === index ? 'opacity-0' : 'opacity-100'
-            }`}>
-              <span className="rotate-[-90deg] whitespace-nowrap text-white/20 font-avenue text-xl uppercase tracking-[0.3em]">
-                {option.title}
-              </span>
-            </div>
           </div>
         ))}
       </div>

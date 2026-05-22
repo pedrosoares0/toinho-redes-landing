@@ -50,7 +50,7 @@ export default function Gallery() {
                 <span className="text-brand-blue/40 text-[9px] font-sans font-black uppercase tracking-widest">Instalações</span>
               </div>
               <div className="w-20 h-20 border-2 border-brand-blue/10 border-t-brand-blue rounded-full flex items-center justify-center animate-spin-slow">
-                 <div className="w-2 h-2 bg-brand-blue rounded-full shadow-[0_0_15px_rgba(7,50,193,0.4)]" />
+                 <img src="favicon.png" alt="Logo" className="w-10 h-10 object-contain -rotate-45" />
               </div>
             </motion.div>
           </div>
