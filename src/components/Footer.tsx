@@ -27,26 +27,22 @@ export default function Footer() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-16 items-start"
         >
-          {/* Info */}
-          <div className="flex flex-col gap-6">
-            <p className="text-brand-blue/60 text-xs font-sans font-black uppercase tracking-[0.3em] leading-relaxed max-w-xs">
-              Liderança absoluta em redes esportivas de alta performance por todo o território nacional.
-            </p>
+          <div className="flex flex-col gap-8 md:col-span-1">
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full border border-brand-blue/10 flex items-center justify-center hover:bg-brand-blue/5 transition-colors text-brand-blue">
-                <Instagram size={18} />
+              <a href="#" className="w-12 h-12 rounded-full border border-brand-blue/10 flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all duration-300 text-brand-blue shadow-sm">
+                <Instagram size={20} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full border border-brand-blue/10 flex items-center justify-center hover:bg-brand-blue/5 transition-colors text-brand-blue">
-                <Mail size={18} />
+              <a href="#" className="w-12 h-12 rounded-full border border-brand-blue/10 flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all duration-300 text-brand-blue shadow-sm">
+                <Mail size={20} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full border border-brand-blue/10 flex items-center justify-center hover:bg-brand-blue/5 transition-colors text-brand-blue">
-                <Phone size={18} />
+              <a href="#" className="w-12 h-12 rounded-full border border-brand-blue/10 flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all duration-300 text-brand-blue shadow-sm">
+                <Phone size={20} />
               </a>
             </div>
           </div>
 
           {/* Links */}
-          <div className="grid grid-cols-2 gap-12">
+          <div className="grid grid-cols-2 gap-12 md:col-span-2">
             <div>
               <h4 className="font-sans font-black mb-6 uppercase tracking-[0.3em] text-[10px] text-brand-blue/30">Menu</h4>
               <ul className="flex flex-col gap-3 text-xs font-sans font-black uppercase tracking-[0.2em]">
@@ -75,12 +71,16 @@ export default function Footer() {
             <p className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-brand-blue/40">
               © 2024 Toinho Redes. Salvador - BA.
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <span className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-brand-blue/30">Criado por</span>
-              <div className="flex gap-1">
-                <span className="bg-brand-lightBlue/20 text-brand-lightBlue px-2 py-0.5 rounded text-[8px] font-black uppercase">PA</span>
-                <span className="bg-brand-blue/10 text-brand-blue/60 px-2 py-0.5 rounded text-[8px] font-black uppercase">STUDIO</span>
-              </div>
+              <a 
+                href="https://github.com/pedrosoares0" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+              >
+                <img src="minha-logo.png" alt="Criador" className="h-6 w-auto object-contain" />
+              </a>
             </div>
           </motion.div>
         </div>
