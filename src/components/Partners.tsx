@@ -31,7 +31,7 @@ export default function Partners() {
       </div>
 
       <div className="w-full relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -39,8 +39,8 @@ export default function Partners() {
           className="mb-16 text-center px-4"
         >
           <h2 className="text-4xl md:text-6xl font-avenue font-black tracking-tighter text-brand-blue uppercase leading-none">
-            Aprovado por quem entende & <br />
-            <span className="text-brand-lightBlue">Requisitado entre os maiores</span>
+            Marcas que exigem o melhor <br />
+            <span className="text-brand-lightBlue">escolheram Toinho!</span>
           </h2>
         </motion.div>
 
@@ -49,13 +49,13 @@ export default function Partners() {
           <div className="flex animate-infinite-scroll whitespace-nowrap items-center w-max">
             {/* Double the partners to ensure seamless loop */}
             {[...partners, ...partners].map((partner, i) => (
-              <div 
-                key={`${partner.name}-${i}`} 
+              <div
+                key={`${partner.name}-${i}`}
                 className="flex items-center justify-center px-16 md:px-32 group cursor-default flex-shrink-0"
               >
-                <img 
-                  src={partner.logo} 
-                  alt={partner.name} 
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
                   className="h-12 md:h-20 w-auto object-contain transition-all duration-500 group-hover:scale-110"
                 />
               </div>
@@ -67,7 +67,7 @@ export default function Partners() {
           <div className="absolute inset-y-0 right-0 w-32 md:w-64 z-20 pointer-events-none bg-gradient-to-l from-white to-transparent" />
         </div>
       </div>
-      
+
       <style>{`
         @keyframes infinite-scroll {
           from { transform: translateX(0); }

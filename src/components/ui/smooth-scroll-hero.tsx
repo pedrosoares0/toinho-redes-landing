@@ -71,6 +71,9 @@ const SmoothScrollHero: React.FC<iISmoothScrollHeroProps> = ({
 		["150%", "100%"],
 	);
 
+	// Mobile always uses cover to fill the viewport
+	const mobileBackgroundSize = "cover";
+
 	return (
 		<div
 			ref={targetRef}
@@ -90,7 +93,7 @@ const SmoothScrollHero: React.FC<iISmoothScrollHeroProps> = ({
 						className="absolute inset-0 md:hidden"
 						style={{
 							backgroundImage: `url(${mobileImage})`,
-							backgroundSize,
+							backgroundSize: mobileBackgroundSize,
 							backgroundPosition: "center",
 							backgroundRepeat: "no-repeat",
 						}}

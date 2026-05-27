@@ -4,23 +4,23 @@ import { motion } from 'framer-motion';
 export default function Footer() {
   return (
     <footer id="contato" className="bg-white text-brand-blue py-16 border-t border-gray-100">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, ease: "easeOut" }}
         className="w-full overflow-hidden mb-16"
       >
-        <img 
-          src="logoToinho.png" 
-          alt="Toinho Redes" 
+        <img
+          src="logoToinho.png"
+          alt="Toinho Redes"
           className="w-full h-auto object-contain"
           style={{ width: '100vw' }}
         />
       </motion.div>
 
       <div className="max-w-[1400px] mx-auto px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -61,29 +61,29 @@ export default function Footer() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
           className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6"
         >
-            <p className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-brand-blue/40">
-              © 2024 Toinho Redes. Salvador - BA.
-            </p>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-brand-blue/30">Criado por</span>
-              <a 
-                href="https://github.com/pedrosoares0" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-              >
-                <img src="minha-logo.png" alt="Criador" className="h-6 w-auto object-contain" />
-              </a>
-            </div>
-          </motion.div>
-        </div>
+          <p className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-brand-blue/40">
+            © 2024 Toinho Redes. Salvador - BA.
+          </p>
+          <div className="flex items-center gap-4">
+            <span className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-brand-blue/30">Criado por</span>
+            <a
+              href="https://github.com/pedrosoares0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition-opacity"
+            >
+              <img src="minha-logo.png" alt="Criador" className="h-6 w-auto object-contain" />
+            </a>
+          </div>
+        </motion.div>
+      </div>
     </footer>
   );
 }

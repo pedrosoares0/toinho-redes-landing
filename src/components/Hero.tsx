@@ -4,7 +4,7 @@ import PillNav from "@/components/ui/PillNav";
 import GradientText from "@/components/ui/GradientText";
 import { motion } from "motion/react";
 
-const sports = ["futevôlei", "beach tennis", "vôlei", "tênis"];
+const sports = ["FUTEVÔLEI", "BEACH TENNIS", "VÔLEI", "TÊNIS"];
 
 const images = [
   "https://i.pinimg.com/736x/9f/a1/94/9fa1947f11c34424d8b81b84b2aadb74.jpg",
@@ -30,20 +30,20 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <motion.div 
+      <motion.div
         initial={{ scale: 1 }}
         animate={{ scale: 1.1 }}
-        transition={{ 
-          duration: 20, 
-          ease: "linear", 
-          repeat: Infinity, 
-          repeatType: "reverse" 
+        transition={{
+          duration: 20,
+          ease: "linear",
+          repeat: Infinity,
+          repeatType: "reverse"
         }}
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('bgherolight.png')" }}
       />
-      
-      <PillNav 
+
+      <PillNav
         logo="favicon.png"
         logoAlt="Toinho Redes"
         items={navItems}
@@ -54,13 +54,13 @@ export default function Hero() {
         className="mt-4"
       />
 
-      <ImageCursorTrail 
-        items={images} 
+      <ImageCursorTrail
+        items={images}
         className="absolute inset-0 z-10 h-full w-full"
         imgClass="w-32 h-40 sm:w-48 sm:h-64 rounded-2xl shadow-2xl"
         distance={25}
       >
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -82,15 +82,15 @@ export default function Hero() {
               </GradientText>
             </div>
           </div>
-          
+
           <div className="mt-16 flex flex-col items-center">
             <p className="text-sm md:text-base font-inter font-bold text-white uppercase tracking-[0.4em] mb-6 drop-shadow-md">
               Redes esportivas para
             </p>
             <div className="w-full flex justify-center h-24 md:h-32">
-              <MorphingText 
-                texts={sports} 
-                className="text-white font-avenue font-black text-5xl md:text-8xl uppercase tracking-tighter drop-shadow-lg"
+              <MorphingText
+                texts={sports}
+                className="text-white font-avenue font-bold text-5xl md:text-8xl uppercase drop-shadow-lg"
               />
             </div>
           </div>

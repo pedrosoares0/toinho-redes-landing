@@ -3,6 +3,10 @@ import Lenis from 'lenis';
 
 export default function SmoothScroll() {
   useEffect(() => {
+    // Lenis interfere com position:sticky — no mobile usamos scroll nativo
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -10,7 +14,6 @@ export default function SmoothScroll() {
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      touchMultiplier: 2,
       infinite: false,
     });
 
