@@ -3,6 +3,7 @@ import { motion, useTransform, MotionValue } from 'framer-motion';
 import { Star, ShieldCheck, Trophy, MapPin } from 'lucide-react';
 import SmoothScrollHero from '@/components/ui/smooth-scroll-hero';
 import LiquidGlassSVG from './LiquidGlassSVG';
+import TextReveal from './ui/text-reveal';
 
 function CountUp({ end, duration = 2, start }: { end: number, duration?: number, start: boolean }) {
   const [count, setCount] = useState(0);
@@ -38,7 +39,7 @@ export default function Stats() {
     <section id="sobre" className="relative w-full">
       <SmoothScrollHero
         scrollHeight={scrollHeight}
-        desktopImage="sem-titulo-1.png"
+        desktopImage="https://navegantes.sc.gov.br/wp-content/uploads/2025/01/Circuito-Brasileiro-de-Volei-de-Praia-Credito-da-foto-Mauricio-Val-FV-Imagem-CBV-4.jpg"
         mobileImage="https://mir-s3-cdn-cf.behance.net/project_modules/fs/8f1ae7135567345.623b402809d39.jpg"
         initialClipPercentage={25}
         finalClipPercentage={75}
@@ -76,8 +77,9 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
 
   const liquidGlassStyle = {
     boxShadow: "rgba(0, 0, 0, 0.25) 0px 4px 8px, rgba(0, 0, 0, 0.15) 0px -10px 25px inset, rgba(255, 255, 255, 0.74) 0px -1px 4px 1px inset",
-    backdropFilter: "url(#liquid-glass-8ngzvqhnz_filter) blur(4.8px) brightness(1.1) saturate(1.2)",
-    WebkitBackdropFilter: "url(#liquid-glass-8ngzvqhnz_filter) blur(4.8px) brightness(1.1) saturate(1.2)"
+    backdropFilter: "blur(12px) brightness(1.05) saturate(1.2)",
+    WebkitBackdropFilter: "blur(12px) brightness(1.05) saturate(1.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.04)"
   };
 
   const cardVariants = {
@@ -110,7 +112,7 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
       <LiquidGlassSVG />
 
       {/* Header */}
-      <div className="flex flex-col items-center text-center mb-8 md:mb-16 gap-3 md:gap-4">
+      <div className="flex flex-col items-center text-center mb-3 md:mb-4 gap-1.5 md:gap-2">
         <div className="flex items-center gap-3">
           <div className="w-8 h-[1px] bg-brand-lightBlue/40" />
           <span className="text-brand-white text-[9px] md:text-[10px] font-sans font-black uppercase tracking-[0.4em]">
@@ -118,16 +120,17 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
           </span>
           <div className="w-8 h-[1px] bg-brand-lightBlue/40" />
         </div>
-        <h2 className="text-4xl md:text-8xl font-avenue font-black text-white uppercase leading-none tracking-tighter">
-          A mais famosa <br />da Bahia
-        </h2>
-        <p className="text-white/80 text-[10px] md:text-xs font-sans font-bold uppercase tracking-[0.2em] max-w-md mt-1 md:mt-2">
+        <div className="text-3xl md:text-5xl lg:text-6xl font-avenue font-black text-white uppercase leading-none tracking-tighter text-center flex flex-col items-center">
+          <TextReveal text="A mais famosa" className="text-white" />
+          <TextReveal text="da Bahia" className="text-brand-lightBlue mt-1" />
+        </div>
+        <p className="text-white/80 text-[10px] md:text-xs font-sans font-bold uppercase tracking-[0.2em] max-w-md mt-1">
           Liderança absoluta em redes esportivas de alta performance por todo o território baiano.
         </p>
       </div>
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-5 h-auto md:h-[480px]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 h-auto md:h-[310px] lg:h-[350px]">
         {/* Main Stat Card */}
         <motion.div
           variants={cardVariants}
@@ -135,7 +138,7 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
           whileInView="visible"
           viewport={{ once: true }}
           whileHover={{ y: -6, transition: { type: "spring", stiffness: 400, damping: 20 } }}
-          className="md:col-span-8 bg-white/[0.03] rounded-2xl md:rounded-[2rem] p-6 md:p-10 relative overflow-hidden group border border-white/10 flex flex-col justify-between"
+          className="md:col-span-8 bg-white/[0.03] rounded-2xl md:rounded-[1.5rem] p-4 md:p-6 lg:p-7 relative overflow-hidden group border border-white/10 flex flex-col justify-between"
           style={liquidGlassStyle}
         >
           <div className="absolute -right-8 -top-8 opacity-[0.03] group-hover:opacity-[0.07] transition-all duration-700 pointer-events-none">
@@ -144,29 +147,29 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
           </div>
 
           <motion.div variants={staggerItemVariants}>
-            <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-white/5 border border-white/10 mb-4 md:mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-3 md:mb-4 lg:mb-6">
               <div className="w-1.5 h-1.5 rounded-full bg-brand-lightBlue animate-pulse" />
               <span className="text-[8px] md:text-[9px] font-sans font-black text-white/95 uppercase tracking-[0.15em]">Baianidade</span>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-brand-lightBlue font-avenue font-black text-3xl md:text-5xl">+</span>
-              <h3 className="text-white font-avenue font-black text-6xl md:text-9xl leading-none tracking-tighter">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-brand-lightBlue font-avenue font-black text-2xl md:text-4xl">+</span>
+              <h3 className="text-white font-avenue font-black text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter">
                 <CountUp end={930} start={shouldStartCount} />
               </h3>
             </div>
           </motion.div>
 
-          <motion.div variants={staggerItemVariants} className="max-w-md relative z-10 mt-3 md:mt-0">
-            <p className="text-white font-avenue text-xl md:text-3xl uppercase leading-tight mb-2 md:mb-3 tracking-tight">
+          <motion.div variants={staggerItemVariants} className="max-w-md relative z-10 mt-2 md:mt-0">
+            <p className="text-white font-avenue text-lg md:text-xl lg:text-2xl uppercase leading-tight mb-1.5 tracking-tight">
               Quadras equipadas em todo o país.
             </p>
-            <p className="text-white/80 text-[11px] md:text-[13px] font-sans font-semibold leading-relaxed max-w-sm">
+            <p className="text-white/80 text-[10px] md:text-xs font-sans font-semibold leading-relaxed max-w-xs md:max-w-sm">
               Nossa qualidade é a escolha de quem busca o melhor desempenho e durabilidade absoluta em cada jogo.
             </p>
           </motion.div>
         </motion.div>
 
-        <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-3 md:gap-5">
+        <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-3 md:gap-4">
           {/* Events Stat Card */}
           <motion.div
             variants={cardVariants}
@@ -174,7 +177,7 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
             whileInView="visible"
             viewport={{ once: true }}
             whileHover={{ y: -6, transition: { type: "spring", stiffness: 400, damping: 20 } }}
-            className="bg-white/[0.03] rounded-2xl md:rounded-[2rem] p-5 md:p-8 border border-white/5 flex flex-col justify-between group transition-all duration-500 hover:bg-white/[0.06] gap-4 md:gap-0 relative overflow-hidden"
+            className="bg-white/[0.03] rounded-2xl md:rounded-[1.5rem] p-4 md:p-5 lg:p-6 border border-white/5 flex flex-col justify-between group transition-all duration-500 hover:bg-white/[0.06] gap-2 md:gap-0 relative overflow-hidden"
             style={liquidGlassStyle}
           >
             <div className="absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.07] transition-all duration-700 pointer-events-none">
@@ -182,19 +185,18 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
               <Trophy size={180} className="text-white -rotate-12 hidden md:block" />
             </div>
 
-            <motion.div variants={staggerItemVariants} className="flex flex-col md:flex-row justify-between items-start gap-2 relative z-10">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-brand-lightBlue/10 border border-brand-lightBlue/20 flex items-center justify-center text-brand-lightBlue group-hover:scale-110 transition-all duration-500 shadow-md">
-                <Trophy size={20} className="md:hidden" />
-                <Trophy size={24} className="hidden md:block" />
+            <motion.div variants={staggerItemVariants} className="flex flex-col md:flex-row justify-between items-start gap-1 relative z-10">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-brand-lightBlue/10 border border-brand-blue/20 flex items-center justify-center text-brand-lightBlue group-hover:scale-110 transition-all duration-500 shadow-sm">
+                <Trophy size={16} />
               </div>
               <span className="text-[8px] md:text-[9px] font-sans font-black text-brand-lightBlue/90 uppercase tracking-[0.2em]">Parceria</span>
             </motion.div>
 
-            <motion.div variants={staggerItemVariants} className="relative z-10 mt-2">
-              <h4 className="text-white font-avenue font-black text-4xl md:text-7xl leading-none">
+            <motion.div variants={staggerItemVariants} className="relative z-10 mt-1 md:mt-2">
+              <h4 className="text-white font-avenue font-black text-3xl md:text-5xl lg:text-6xl leading-none">
                 +<CountUp end={200} start={shouldStartCount} />
               </h4>
-              <p className="text-white/95 text-[10px] md:text-[11px] font-sans font-black uppercase tracking-[0.15em] mt-2">Eventos Patrocinados</p>
+              <p className="text-white/95 text-[9px] md:text-[10px] font-sans font-black uppercase tracking-[0.15em] mt-1 md:mt-1.5">Eventos Patrocinados</p>
             </motion.div>
           </motion.div>
 
@@ -205,7 +207,7 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
             whileInView="visible"
             viewport={{ once: true }}
             whileHover={{ y: -6, transition: { type: "spring", stiffness: 400, damping: 20 } }}
-            className="bg-brand-lightBlue/30 rounded-2xl md:rounded-[2rem] p-5 md:p-8 flex flex-col justify-between relative overflow-hidden group transition-all duration-500 hover:brightness-110 gap-4 md:gap-0"
+            className="bg-brand-lightBlue/30 rounded-2xl md:rounded-[1.5rem] p-4 md:p-5 lg:p-6 flex flex-col justify-between relative overflow-hidden group transition-all duration-500 hover:brightness-110 gap-2 md:gap-0"
             style={liquidGlassStyle}
           >
             <div className="absolute -right-6 -bottom-6 opacity-[0.06] group-hover:opacity-[0.12] transition-all duration-700 pointer-events-none">
@@ -213,19 +215,18 @@ function StatsContent({ progress }: { progress: MotionValue<number> }) {
               <ShieldCheck size={180} className="text-brand-blue -rotate-12 hidden md:block" />
             </div>
 
-            <motion.div variants={staggerItemVariants} className="flex flex-col md:flex-row justify-between items-start relative z-10 gap-2">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-lg transition-all">
-                <ShieldCheck size={20} className="md:hidden" />
-                <ShieldCheck size={24} className="hidden md:block" />
+            <motion.div variants={staggerItemVariants} className="flex flex-col md:flex-row justify-between items-start relative z-10 gap-1">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-brand-blue flex items-center justify-center text-white shadow-md transition-all">
+                <ShieldCheck size={16} />
               </div>
               <span className="text-[8px] md:text-[9px] font-sans font-black text-brand-blue/90 uppercase tracking-[0.2em]">Tradição</span>
             </motion.div>
 
-            <motion.div variants={staggerItemVariants} className="relative z-10">
-              <h4 className="text-brand-blue font-avenue font-black text-3xl md:text-6xl leading-none">
+            <motion.div variants={staggerItemVariants} className="relative z-10 mt-1 md:mt-2">
+              <h4 className="text-brand-blue font-avenue font-black text-2xl md:text-4xl lg:text-5xl leading-none">
                 <CountUp end={10} start={shouldStartCount} /> ANOS
               </h4>
-              <p className="text-brand-blue/95 text-[10px] md:text-[11px] font-sans font-black uppercase tracking-[0.15em] mt-2">No Mercado</p>
+              <p className="text-brand-blue/95 text-[9px] md:text-[10px] font-sans font-black uppercase tracking-[0.15em] mt-1 md:mt-1.5">No Mercado</p>
             </motion.div>
           </motion.div>
         </div>

@@ -9,6 +9,15 @@ import Footer from './components/Footer'
 import SmoothScroll from './components/ui/smooth-scroll'
 import ImagePreloader from './components/ui/image-preloader'
 import { ScrollProgress } from './components/ui/scroll-progress'
+import PillNav from './components/ui/PillNav'
+
+const navItems = [
+  { label: 'Início', href: '#' },
+  { label: 'Portfólio', href: '#portfolio' },
+  { label: 'Catálogo', href: '#catalogo' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Contato', href: '#contato' },
+];
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 60, scale: 0.96 },
@@ -26,7 +35,17 @@ const sectionVariants = {
 function App() {
   return (
     <ImagePreloader>
-      <main className="min-h-screen bg-white dark:bg-neutral-950 text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
+      <main className="min-h-screen bg-white dark:bg-brand-darkBlue text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
+        <PillNav
+          logo="favicon.png"
+          logoAlt="Toinho Redes"
+          items={navItems}
+          baseColor="#0732C1"
+          pillColor="#ffffff"
+          pillTextColor="#0732C1"
+          hoveredPillTextColor="#ffffff"
+          className="mt-4"
+        />
         <ScrollProgress />
         <SmoothScroll />
         <Hero />

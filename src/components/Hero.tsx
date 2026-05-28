@@ -1,6 +1,5 @@
 import { MorphingText } from "@/components/ui/liquid-text";
 import { ImageCursorTrail } from "@/components/ui/image-cursor-trail";
-import PillNav from "@/components/ui/PillNav";
 import GradientText from "@/components/ui/GradientText";
 import { motion } from "motion/react";
 
@@ -18,14 +17,6 @@ const images = [
   "https://i.pinimg.com/1200x/18/80/11/18801189d45d80532c1e893cc8cbeaf3.jpg",
 ];
 
-const navItems = [
-  { label: 'Início', href: '#' },
-  { label: 'Portfólio', href: '#portfolio' },
-  { label: 'Catálogo', href: '#catalogo' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Contato', href: '#contato' },
-];
-
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
@@ -39,20 +30,10 @@ export default function Hero() {
           repeat: Infinity,
           repeatType: "reverse"
         }}
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('bgherolight.png')" }}
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500 dark:brightness-[0.45] dark:saturate-[0.8]"
+        style={{ backgroundImage: "url('bgherolight.webp')" }}
       />
 
-      <PillNav
-        logo="favicon.png"
-        logoAlt="Toinho Redes"
-        items={navItems}
-        baseColor="#0732C1"
-        pillColor="#ffffff"
-        pillTextColor="#0732C1"
-        hoveredPillTextColor="#ffffff"
-        className="mt-4"
-      />
 
       <ImageCursorTrail
         items={images}

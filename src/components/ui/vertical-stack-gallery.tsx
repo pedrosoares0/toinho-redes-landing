@@ -9,6 +9,7 @@ interface Product {
   description: string;
   material: string;
   images: string[];
+  whatsappUrl: string;
 }
 
 const products: Product[] = [
@@ -18,7 +19,8 @@ const products: Product[] = [
     badgeTop: 'PADRÃO',
     description: 'Rede profissional com tripla camada de reforço para máxima resistência.',
     material: '100% NYLON',
-    images: ['https://anotabahia.com/wp-content/uploads/2022/11/anotabahia-bahia-open-de-futevolei-bahia-open-de-futevolei.jpg']
+    images: ['3faixas3.webp'],
+    whatsappUrl: 'https://wa.me/5571987974822'
   },
   {
     name: '4 Faixas',
@@ -26,7 +28,8 @@ const products: Product[] = [
     badgeTop: 'CAMPEÃ DE VENDAS',
     description: 'O máximo em durabilidade e tensão para jogos intensos e profissionais.',
     material: '100% NYLON',
-    images: ['4faixas.png', '4faixas2.png']
+    images: ['4faixas.webp', '4faixas2.webp'],
+    whatsappUrl: 'https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20saber%20mais%20sobre%20a%20rede%20de%204%20faixas.'
   },
   {
     name: 'Orelha',
@@ -34,7 +37,8 @@ const products: Product[] = [
     badgeTop: 'DESIGN',
     description: 'Design clássico com fixação reforçada nas extremidades para maior estabilidade.',
     material: '100% NYLON',
-    images: ['https://6d995b8381.cbaul-cdnwnd.com/38958216990b58d66c8d7fd8b0c6ff46/200000301-ad357ae2f3/IMG_5107-9.JPG?ph=6d995b8381']
+    images: ['https://6d995b8381.cbaul-cdnwnd.com/38958216990b58d66c8d7fd8b0c6ff46/200000301-ad357ae2f3/IMG_5107-9.JPG?ph=6d995b8381'],
+    whatsappUrl: 'https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20saber%20mais%20sobre%20a%20rede%20orelha.'
   },
   {
     name: 'Profissional',
@@ -42,7 +46,8 @@ const products: Product[] = [
     badgeTop: 'COMPETIÇÕES',
     description: 'Instalação de elite para grandes jogos e competições oficiais.',
     material: '100% NYLON',
-    images: ['foto (1).jpeg']
+    images: ['foto (1).jpeg'],
+    whatsappUrl: 'https://wa.me/5571987974822?text=Fala%20Toinho!%20Vou%20precisar%20de%20umas%20redes%20para%20um%20campeonato.'
   }
 ];
 
@@ -116,9 +121,8 @@ export function HorizontalStackGallery() {
     return Math.abs(diff) <= 2;
   };
 
-  const handleWhatsApp = (productName: string) => {
-    const message = encodeURIComponent(`Olá! Gostaria de fazer um orçamento para o modelo: ${productName}`);
-    window.open(`https://wa.me/5571992144574?text=${message}`, '_blank');
+  const handleWhatsApp = (url: string) => {
+    window.open(url, '_blank');
   };
 
   return (
@@ -133,16 +137,23 @@ export function HorizontalStackGallery() {
           position: relative; 
           display: flex; 
           align-items: center; 
-          gap: 0.5rem; 
+          gap: 0.4rem; 
           transform-origin: center; 
-          padding: 1.2rem 2.5rem; 
+          padding: 0.7rem 1.4rem; 
           background-color: transparent; 
           border: none; 
           border-radius: var(--border_radius); 
-          transform: scale(calc(1 + (var(--active, 0) * 0.1))); 
+          transform: scale(calc(1 + (var(--active, 0) * 0.05))); 
           transition: transform var(--transtion); 
           z-index: 10;
         } 
+        @media (min-width: 768px) {
+          .budget-button {
+            padding: 1.1rem 2.2rem; 
+            gap: 0.5rem;
+            transform: scale(calc(1 + (var(--active, 0) * 0.1)));
+          }
+        }
         .budget-button::before { 
           content: ""; 
           position: absolute; 
@@ -221,8 +232,13 @@ export function HorizontalStackGallery() {
         .budget-button .sparkle { 
           position: relative; 
           z-index: 10; 
-          width: 1.75rem; 
+          width: 1.2rem; 
         } 
+        @media (min-width: 768px) {
+          .budget-button .sparkle {
+            width: 1.6rem;
+          }
+        }
         .budget-button .sparkle .path { 
           fill: currentColor; 
           stroke: currentColor; 
@@ -251,17 +267,22 @@ export function HorizontalStackGallery() {
           ); 
           background-clip: text; 
           -webkit-background-clip: text;
-          font-size: 1rem; 
+          font-size: 0.8rem; 
           font-weight: 900;
           text-transform: uppercase;
           letter-spacing: 0.1em;
           color: transparent; 
         }
+        @media (min-width: 768px) {
+          .budget-button .text_button {
+            font-size: 0.95rem;
+          }
+        }
       `}</style>
       
       {/* Background Decorative Element */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-black/[0.03] rounded-full blur-[120px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-black/[0.03] dark:bg-white/[0.015] rounded-full blur-[120px]" />
       </div>
 
       {/* Card Stack */}
@@ -341,7 +362,7 @@ export function HorizontalStackGallery() {
 
                       <div className="flex justify-center">
                         <button
-                          onClick={() => handleWhatsApp(product.name)}
+                          onClick={() => handleWhatsApp(product.whatsappUrl)}
                           className="budget-button"
                         >
                           <div className="dots_border" /> 

@@ -25,7 +25,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-24 bg-white">
+    <section id="faq" className="py-24 bg-white dark:bg-brand-darkBlue transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -34,7 +34,7 @@ export default function FAQ() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-6xl font-avenue font-black tracking-tighter text-brand-blue uppercase leading-none">
+          <h2 className="text-4xl md:text-6xl font-avenue font-black tracking-tighter text-brand-blue dark:text-white uppercase leading-none">
             Dúvidas <br />
             <span className="text-brand-lightBlue drop-shadow-sm">Frequentes</span>
           </h2>
@@ -49,17 +49,17 @@ export default function FAQ() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               key={index}
               className={`border-2 rounded-[2rem] overflow-hidden transition-all duration-500 ${
-                openIndex === index ? 'border-brand-secondaryBlue bg-brand-lightBlue/10' : 'border-brand-blue/5 bg-white'
+                openIndex === index ? 'border-brand-secondaryBlue bg-brand-lightBlue/10 dark:bg-brand-secondaryBlue/10' : 'border-brand-blue/5 dark:border-white/5 bg-white dark:bg-brand-darkCard/40'
               }`}
             >
               <button 
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 className="w-full flex items-center justify-between p-8 text-left transition-colors"
               >
-                <span className={`font-avenue font-black text-xl uppercase tracking-tighter ${openIndex === index ? 'text-brand-blue' : 'text-brand-blue/60'}`}>
+                <span className={`font-avenue font-black text-xl uppercase tracking-tighter ${openIndex === index ? 'text-brand-blue dark:text-white' : 'text-brand-blue/60 dark:text-white/60'}`}>
                   {faq.question}
                 </span>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openIndex === index ? 'bg-brand-blue text-white rotate-180' : 'bg-brand-blue/5 text-brand-blue'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openIndex === index ? 'bg-brand-blue dark:bg-brand-lightBlue text-white dark:text-brand-blue rotate-180' : 'bg-brand-blue/5 dark:bg-white/10 text-brand-blue dark:text-brand-lightBlue'}`}>
                   {openIndex === index ? <Minus size={18} /> : <Plus size={18} />}
                 </div>
               </button>
@@ -69,7 +69,7 @@ export default function FAQ() {
                   openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="p-8 pt-0 text-brand-blue/60 font-inter font-bold uppercase tracking-wide leading-relaxed text-sm">
+                <div className="p-8 pt-0 text-brand-blue/60 dark:text-white/70 font-inter font-bold uppercase tracking-wide leading-relaxed text-sm">
                   {faq.answer}
                 </div>
               </div>

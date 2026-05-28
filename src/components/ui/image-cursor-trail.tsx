@@ -84,11 +84,7 @@ export function ImageCursorTrail({
   return ( 
     <div 
       onMouseMove={(e) => handleOnMove({ clientX: e.clientX, clientY: e.clientY })} 
-      onTouchMove={(e) => {
-        if (e.touches.length > 0) {
-          handleOnMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
-        }
-      }} 
+
       ref={containerRef} 
       className={cn( 
         "relative w-full overflow-hidden", 

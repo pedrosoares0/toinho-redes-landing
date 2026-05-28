@@ -45,6 +45,16 @@ const SmoothScrollHero: React.FC<iISmoothScrollHeroProps> = ({
 	finalClipPercentage = 75,
 	children,
 }) => {
+	const [isMobile, setIsMobile] = React.useState(false);
+
+	React.useEffect(() => {
+		const mql = window.matchMedia("(max-width: 767px)");
+		setIsMobile(mql.matches);
+		const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+		mql.addEventListener("change", listener);
+		return () => mql.removeEventListener("change", listener);
+	}, []);
+
 	const targetRef = React.useRef<HTMLDivElement>(null);
 	const { scrollYProgress } = useScroll({
 		target: targetRef,
@@ -80,12 +90,12 @@ const SmoothScrollHero: React.FC<iISmoothScrollHeroProps> = ({
 			className="relative w-full"
 			style={{ height: `calc(${scrollHeight}px + 100vh)` }}
 		>
-			<div className="sticky top-0 h-screen w-full overflow-hidden bg-white">
+			<div className="sticky top-0 h-screen w-full overflow-hidden bg-white dark:bg-brand-darkBlue transition-colors duration-300">
 				{/* Background container with clipping */}
 				<motion.div
 					className="absolute inset-0 bg-black z-0"
 					style={{
-						clipPath,
+						clipPath: isMobile ? "none" : clipPath,
 					}}
 				>
 					{/* Background images */}

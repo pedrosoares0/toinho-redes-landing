@@ -40,24 +40,26 @@ const PillNav: React.FC<PillNavProps> = ({
 }) => {
   const resolvedPillTextColor = pillTextColor ?? baseColor;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    }
-    return 'light';
-  });
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(nextTheme);
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < 50) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
+
 
   const circleRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const tlRefs = useRef<Array<gsap.core.Timeline | null>>([]);
@@ -70,15 +72,8 @@ const PillNav: React.FC<PillNavProps> = ({
   const logoRef = useRef<HTMLAnchorElement | HTMLElement | null>(null);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    } else {
-      setTheme('light');
-      document.documentElement.classList.remove('dark');
-    }
+    localStorage.removeItem('theme');
+    document.documentElement.classList.remove('dark');
 
     const layout = () => {
       circleRefs.current.forEach(circle => {
@@ -299,213 +294,22 @@ const PillNav: React.FC<PillNavProps> = ({
     ['--pill-gap']: '3px'
   } as React.CSSProperties;
 
+  const showNavbar = isVisible || isMobileMenuOpen;
+
   return (
-    <div className="fixed top-[1em] z-[1000] w-full flex justify-center px-4 pointer-events-none">
-      {/* Mobile Backdrop Overlay */}
+    <>
+      {/* Mobile Backdrop Overlay - Rendered outside transforming parent to prevent stacking context constraints */}
       <div
-        className={`fixed inset-0 bg-black/45 backdrop-blur-md md:hidden transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-black/45 backdrop-blur-md md:hidden transition-opacity duration-300 z-[1005] ${
+          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
         onClick={() => toggleMobileMenu()}
       />
 
-      {/* MOBILE Standalone Circular Buttons */}
-      <div className={`w-full flex md:hidden items-center justify-between pointer-events-none transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'}`}>
-        {isRouterLink(items?.[0]?.href) ? (
-          <Link
-            to={items[0].href}
-            aria-label="Home"
-            onMouseEnter={handleLogoEnter}
-            ref={el => { logoRef.current = el; }}
-            className="w-12 h-12 rounded-full p-2.5 inline-flex items-center justify-center overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 pointer-events-auto active:scale-95 transition-all"
-          >
-            <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-contain block" />
-          </Link>
-        ) : (
-          <a
-            href={items?.[0]?.href || '#'}
-            aria-label="Home"
-            onMouseEnter={handleLogoEnter}
-            ref={el => { logoRef.current = el; }}
-            className="w-12 h-12 rounded-full p-2.5 inline-flex items-center justify-center overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 pointer-events-auto active:scale-95 transition-all"
-          >
-            <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-contain block" />
-          </a>
-        )}
-
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <button
-            onClick={toggleTheme}
-            className="w-12 h-12 rounded-full inline-flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 text-brand-blue dark:text-brand-lightBlue active:scale-95 transition-all"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'dark' ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} className="text-brand-blue" />}
-          </button>
-
-          <button
-            ref={hamburgerRef}
-            onClick={toggleMobileMenu}
-            className="w-12 h-12 rounded-full inline-flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 text-brand-blue dark:text-brand-lightBlue active:scale-95 transition-all"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </div>
-
-      {/* DESKTOP Pill Navigation Bar */}
-      <nav
-        className="hidden md:flex items-center justify-start box-border pointer-events-auto backdrop-blur-md bg-white/20 dark:bg-black/30 border border-white/30 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-full relative overflow-visible group"
-        aria-label="Primary"
-        style={cssVars}
-      >
-        <div className="absolute inset-0 z-[-1] opacity-[0.05] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat rounded-full" />
-
-        {isRouterLink(items?.[0]?.href) ? (
-          <Link
-            to={items[0].href}
-            aria-label="Home"
-            onMouseEnter={handleLogoEnter}
-            role="menuitem"
-            ref={el => {
-              logoRef.current = el;
-            }}
-            className="rounded-full p-2 inline-flex items-center justify-center overflow-hidden shadow-sm backdrop-blur-sm bg-white/5 border border-white/10"
-            style={{
-              width: 'var(--nav-h)',
-              height: 'var(--nav-h)'
-            }}
-          >
-            <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-cover block" />
-          </Link>
-        ) : (
-          <a
-            href={items?.[0]?.href || '#'}
-            aria-label="Home"
-            onMouseEnter={handleLogoEnter}
-            ref={el => {
-              logoRef.current = el;
-            }}
-            className="rounded-full p-2 inline-flex items-center justify-center overflow-hidden shadow-sm backdrop-blur-sm bg-white/5 border border-white/10"
-            style={{
-              width: 'var(--nav-h)',
-              height: 'var(--nav-h)'
-            }}
-          >
-            <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-cover block" />
-          </a>
-        )}
-
-        <div
-          ref={navItemsRef}
-          className="relative items-center rounded-full flex ml-2 shadow-sm backdrop-blur-sm bg-white/5 border border-white/10"
-          style={{
-            height: 'var(--nav-h)'
-          }}
-        >
-          <ul
-            role="menubar"
-            className="list-none flex items-stretch m-0 p-[3px] h-full"
-            style={{ gap: 'var(--pill-gap)' }}
-          >
-            {items.map((item, i) => {
-              const isActive = activeHref === item.href;
-
-              const pillStyle: React.CSSProperties = {
-                background: 'transparent',
-                color: 'var(--pill-text, var(--base, #000))',
-                paddingLeft: 'var(--pill-pad-x)',
-                paddingRight: 'var(--pill-pad-x)'
-              };
-
-              const PillContent = (
-                <>
-                  <span
-                    className="hover-circle absolute left-1/2 bottom-0 rounded-full z-[1] block pointer-events-none"
-                    style={{
-                      background: 'var(--base)',
-                      willChange: 'transform'
-                    }}
-                    aria-hidden="true"
-                    ref={el => {
-                      circleRefs.current[i] = el;
-                    }}
-                  />
-                  <span className="label-stack relative inline-block leading-[1] z-[2]">
-                    <span
-                      className="pill-label relative z-[2] inline-block leading-[1]"
-                      style={{ willChange: 'transform' }}
-                    >
-                      {item.label}
-                    </span>
-                    <span
-                      className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
-                      style={{
-                        color: 'var(--hover-text, #fff)',
-                        willChange: 'transform, opacity'
-                      }}
-                      aria-hidden="true"
-                    >
-                      {item.label}
-                    </span>
-                  </span>
-                  {isActive && (
-                    <span
-                      className="absolute left-1/2 -bottom-[6px] -translate-x-1/2 w-3 h-3 rounded-full z-[4]"
-                      style={{ background: 'var(--base)' }}
-                      aria-hidden="true"
-                    />
-                  )}
-                </>
-              );
-
-              const basePillClasses =
-                'relative overflow-hidden inline-flex items-center justify-center h-full no-underline rounded-full box-border font-bold text-[13px] leading-[0] uppercase tracking-[0.5px] whitespace-nowrap cursor-pointer px-0';
-
-              return (
-                <li key={item.href} role="none" className="flex h-full">
-                  {isRouterLink(item.href) ? (
-                    <Link
-                      role="menuitem"
-                      to={item.href}
-                      className={basePillClasses}
-                      style={pillStyle}
-                      aria-label={item.ariaLabel || item.label}
-                      onMouseEnter={() => handleEnter(i)}
-                      onMouseLeave={() => handleLeave(i)}
-                    >
-                      {PillContent}
-                    </Link>
-                  ) : (
-                    <a
-                      role="menuitem"
-                      href={item.href}
-                      className={basePillClasses}
-                      style={pillStyle}
-                      aria-label={item.ariaLabel || item.label}
-                      onMouseEnter={() => handleEnter(i)}
-                      onMouseLeave={() => handleLeave(i)}
-                    >
-                      {PillContent}
-                    </a>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        <button
-          onClick={toggleTheme}
-          className="ml-2 w-[36px] h-[36px] rounded-full inline-flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
-          aria-label="Toggle Theme"
-        >
-          {theme === 'dark' ? <Sun size={16} className="text-amber-400" /> : <Moon size={16} />}
-        </button>
-      </nav>
-
-      {/* MOBILE Menu Overlay */}
+      {/* MOBILE Menu Overlay - Rendered outside transforming parent so it covers full viewport smoothly */}
       <div
         ref={mobileMenuRef}
-        className="md:hidden fixed inset-0 w-screen h-screen z-[998] backdrop-blur-3xl bg-white/95 dark:bg-neutral-950/98 border-b border-brand-blue/10 dark:border-white/5 overflow-hidden pointer-events-auto flex flex-col justify-between pt-6 pb-10 px-8"
+        className="md:hidden fixed inset-0 w-screen h-screen z-[1010] backdrop-blur-sm bg-white/95 dark:bg-brand-darkBlue/98 border-b border-brand-blue/10 dark:border-white/5 overflow-hidden pointer-events-auto flex flex-col justify-between pt-6 pb-10 px-8"
         style={{
           ...cssVars,
           visibility: 'hidden'
@@ -605,19 +409,27 @@ const PillNav: React.FC<PillNavProps> = ({
           {/* Quick contact buttons */}
           <div className="flex gap-3 w-full">
             <a
-              href="https://wa.me/5571992144574"
+              href="https://wa.me/5571987974822"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border border-green-500/20 px-4 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black font-sans tracking-widest uppercase active:scale-95 transition-all animate-fade-in"
+              className="flex-1 bg-green-500/5 hover:bg-green-500 hover:text-white text-green-600 dark:text-green-400 border border-green-500/20 hover:border-green-500 px-4 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black font-sans tracking-widest uppercase active:scale-95 transition-all duration-300 shadow-sm group"
             >
-              <MessageCircle size={14} />
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 transition-transform duration-300 group-hover:scale-110">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
               WhatsApp
             </a>
             <a
-              href="#"
-              className="flex-1 bg-brand-blue/5 dark:bg-white/5 text-brand-blue dark:text-white/80 border border-brand-blue/10 dark:border-white/10 px-4 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black font-sans tracking-widest uppercase active:scale-95 transition-all"
+              href="https://www.instagram.com/toinhoredessalvador/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-brand-blue/5 hover:bg-brand-blue hover:text-white text-brand-blue dark:text-white/80 border border-brand-blue/10 hover:border-brand-blue px-4 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black font-sans tracking-widest uppercase active:scale-95 transition-all duration-300 shadow-sm group"
             >
-              <Instagram size={14} />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 transition-transform duration-300 group-hover:scale-110">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
               Instagram
             </a>
           </div>
@@ -628,7 +440,195 @@ const PillNav: React.FC<PillNavProps> = ({
           </div>
         </div>
       </div>
-    </div>
+
+      {/* DESKTOP/MOBILE Navigation Bar Trigger Wrapper */}
+      <div className={`fixed top-[1em] z-[1000] w-full flex justify-center px-4 pointer-events-none transition-transform duration-500 ${
+        showNavbar ? 'translate-y-0' : '-translate-y-24'
+      }`}>
+        {/* MOBILE Standalone Circular Buttons */}
+        <div className={`w-full flex md:hidden items-center justify-between pointer-events-none transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'}`}>
+          {isRouterLink(items?.[0]?.href) ? (
+            <Link
+              to={items[0].href}
+              aria-label="Home"
+              onMouseEnter={handleLogoEnter}
+              ref={el => { logoRef.current = el; }}
+              className="w-12 h-12 rounded-full p-2.5 inline-flex items-center justify-center overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 pointer-events-auto active:scale-95 transition-all"
+            >
+              <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-contain block" />
+            </Link>
+          ) : (
+            <a
+              href={items?.[0]?.href || '#'}
+              aria-label="Home"
+              onMouseEnter={handleLogoEnter}
+              ref={el => { logoRef.current = el; }}
+              className="w-12 h-12 rounded-full p-2.5 inline-flex items-center justify-center overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 pointer-events-auto active:scale-95 transition-all"
+            >
+              <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-contain block" />
+            </a>
+          )}
+
+          <div className="flex items-center gap-2 pointer-events-auto">
+
+
+            <button
+              ref={hamburgerRef}
+              onClick={toggleMobileMenu}
+              className="w-12 h-12 rounded-full inline-flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/20 dark:bg-black/40 border border-white/30 dark:border-white/10 text-brand-blue dark:text-brand-lightBlue active:scale-95 transition-all"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </div>
+
+        {/* DESKTOP Pill Navigation Bar */}
+        <nav
+          className="hidden md:flex items-center justify-start box-border pointer-events-auto backdrop-blur-md bg-white/20 dark:bg-black/30 border border-white/30 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-full relative overflow-visible group"
+          aria-label="Primary"
+          style={cssVars}
+        >
+          <div className="absolute inset-0 z-[-1] opacity-[0.05] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat rounded-full" />
+
+          {isRouterLink(items?.[0]?.href) ? (
+            <Link
+              to={items[0].href}
+              aria-label="Home"
+              onMouseEnter={handleLogoEnter}
+              role="menuitem"
+              ref={el => {
+                logoRef.current = el;
+              }}
+              className="rounded-full p-2 inline-flex items-center justify-center overflow-hidden shadow-sm backdrop-blur-sm bg-white/5 border border-white/10"
+              style={{
+                width: 'var(--nav-h)',
+                height: 'var(--nav-h)'
+              }}
+            >
+              <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-cover block" />
+            </Link>
+          ) : (
+            <a
+              href={items?.[0]?.href || '#'}
+              aria-label="Home"
+              onMouseEnter={handleLogoEnter}
+              ref={el => {
+                logoRef.current = el;
+              }}
+              className="rounded-full p-2 inline-flex items-center justify-center overflow-hidden shadow-sm backdrop-blur-sm bg-white/5 border border-white/10"
+              style={{
+                width: 'var(--nav-h)',
+                height: 'var(--nav-h)'
+              }}
+            >
+              <img src={logo} alt={logoAlt} ref={logoImgRef} className="w-full h-full object-cover block" />
+            </a>
+          )}
+
+          <div
+            ref={navItemsRef}
+            className="relative items-center rounded-full flex ml-2 shadow-sm backdrop-blur-sm bg-white/5 border border-white/10"
+            style={{
+              height: 'var(--nav-h)'
+            }}
+          >
+            <ul
+              role="menubar"
+              className="list-none flex items-stretch m-0 p-[3px] h-full"
+              style={{ gap: 'var(--pill-gap)' }}
+            >
+              {items.map((item, i) => {
+                const isActive = activeHref === item.href;
+
+                const pillStyle: React.CSSProperties = {
+                  background: 'transparent',
+                  color: 'var(--pill-text, var(--base, #000))',
+                  paddingLeft: 'var(--pill-pad-x)',
+                  paddingRight: 'var(--pill-pad-x)'
+                };
+
+                const PillContent = (
+                  <>
+                    <span
+                      className="hover-circle absolute left-1/2 bottom-0 rounded-full z-[1] block pointer-events-none"
+                      style={{
+                        background: 'var(--base)',
+                        willChange: 'transform'
+                      }}
+                      aria-hidden="true"
+                      ref={el => {
+                        circleRefs.current[i] = el;
+                      }}
+                    />
+                    <span className="label-stack relative inline-block leading-[1] z-[2]">
+                      <span
+                        className="pill-label relative z-[2] inline-block leading-[1]"
+                        style={{ willChange: 'transform' }}
+                      >
+                        {item.label}
+                      </span>
+                      <span
+                        className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
+                        style={{
+                          color: 'var(--hover-text, #fff)',
+                          willChange: 'transform, opacity'
+                        }}
+                        aria-hidden="true"
+                      >
+                        {item.label}
+                      </span>
+                    </span>
+                    {isActive && (
+                      <span
+                        className="absolute left-1/2 -bottom-[6px] -translate-x-1/2 w-3 h-3 rounded-full z-[4]"
+                        style={{ background: 'var(--base)' }}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </>
+                );
+
+                const basePillClasses =
+                  'relative overflow-hidden inline-flex items-center justify-center h-full no-underline rounded-full box-border font-bold text-[13px] leading-[0] uppercase tracking-[0.5px] whitespace-nowrap cursor-pointer px-0';
+
+                return (
+                  <li key={item.href} role="none" className="flex h-full">
+                    {isRouterLink(item.href) ? (
+                      <Link
+                        role="menuitem"
+                        to={item.href}
+                        className={basePillClasses}
+                        style={pillStyle}
+                        aria-label={item.ariaLabel || item.label}
+                        onMouseEnter={() => handleEnter(i)}
+                        onMouseLeave={() => handleLeave(i)}
+                      >
+                        {PillContent}
+                      </Link>
+                    ) : (
+                      <a
+                        role="menuitem"
+                        href={item.href}
+                        className={basePillClasses}
+                        style={pillStyle}
+                        aria-label={item.ariaLabel || item.label}
+                        onMouseEnter={() => handleEnter(i)}
+                        onMouseLeave={() => handleLeave(i)}
+                      >
+                        {PillContent}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+
+        </nav>
+      </div>
+    </>
   );
 };
 export default PillNav;

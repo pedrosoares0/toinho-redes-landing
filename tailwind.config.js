@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -12,6 +13,8 @@ export default {
           secondaryBlue: '#1371F9',
           lightBlue: '#80C2FD',
           white: '#ffffff',
+          darkBlue: '#02081F',
+          darkCard: '#081135',
         }
       },
       fontFamily: {

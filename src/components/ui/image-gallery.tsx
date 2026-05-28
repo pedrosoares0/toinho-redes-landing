@@ -10,7 +10,7 @@ export const galleryImages = [
   {
     title: "Federação Baiana de Futevôlei",
     location: "Bahia",
-    image: "foto (5).png",
+    image: "foto (5).webp",
   },
   {
     title: "Praiana",
@@ -33,7 +33,7 @@ export const galleryImages = [
   {
     title: "AABB - ASSOCIAÇÃO ATLÉTICA BANCO DO BRASIL",
     location: "SALVADOR, VALENÇA, ITABUNA - BA",
-    image: "4faixas2.png",
+    image: "4faixas2.webp",
   },
 ];
 
