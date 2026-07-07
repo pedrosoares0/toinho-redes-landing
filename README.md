@@ -1,6 +1,6 @@
 # Toinho Redes — Sem Rede, Sem Jogo! 🏆
 
-![Toinho Redes Capa](./capa.png)
+![Toinho Redes Capa](./capa.webp)
 
 Uma landing page moderna e interativa desenvolvida para a **Toinho Redes**, destacando a fabricação de redes esportivas personalizadas e de alto desempenho utilizadas nas praias, quadras e eventos mais importantes da Bahia.
 
