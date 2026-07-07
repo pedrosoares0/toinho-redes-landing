@@ -25,7 +25,7 @@ A **Toinho Redes** é líder absoluta em redes esportivas de alta performance em
 * **[React](https://react.dev/)** + **[TypeScript](https://www.typescriptlang.org/)** 
 * **[Vite](https://vitejs.dev/)** 
 * **[Tailwind CSS](https://tailwindcss.com/)** 
-* **[Framer Motion](https://www.framer.com/motion/)** & **Motion/React**
+* **[Framer Motion](https://www.framer.com/motion/)**
 * **[GSAP](https://gsap.com/)**
 * **[Lenis](https://lenis.darkroom.engineering/)**
 * **[Lucide React](https://lucide.dev/)** & **[React Icons](https://react-icons.github.io/react-icons/)**
