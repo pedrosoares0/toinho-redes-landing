@@ -28,6 +28,29 @@
     <!-- Recursos críticos do primeiro paint -->
     <link rel="preload" href="/fonts/AvenueRegular-R9e2M.otf" as="font" type="font/otf" crossorigin />
     <link rel="preload" href="/bgherolight.webp" as="image" type="image/webp" fetchpriority="high" />
+
+    <!-- Oculta qualquer badge ou drawer do Netlify imediatamente no primeiro frame -->
+    <style>
+      #netlify-badge,
+      .netlify-badge,
+      [data-netlify-drawer],
+      #netlify-drawer,
+      iframe[src*="netlify"],
+      iframe[id*="netlify"],
+      div[class*="netlify-drawer"],
+      netlifydrawer-app,
+      div[style*="position: fixed"][style*="bottom"]:has(a[href*="netlify.com"]),
+      div[style*="position:fixed"][style*="bottom"]:has(a[href*="netlify.com"]),
+      div:has(> a[href*="netlify.com"]) {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        transform: scale(0) !important;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
