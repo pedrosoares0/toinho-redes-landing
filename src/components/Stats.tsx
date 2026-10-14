@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'motion/react';
 
 /**
- * Contador numérico dinâmico rápido que passa por apenas 3 a 5 números
+ * Contador numérico dinâmico rápido que passa por apenas 3 a 4 números
  * antes de fixar no valor final, proporcionando animação ágil e impactante.
  */
 function CountUp({
@@ -75,10 +75,10 @@ export default function Stats() {
     },
     {
       value: 10,
-      prefix: "",
-      suffix: " ANOS",
+      prefix: "+",
+      suffix: "",
       kicker: "Tradição",
-      title: "De liderança absoluta",
+      title: "Anos de tradição e liderança",
       description: "Uma década de fabricação artesanal sob medida e acabamento reforçado.",
     },
     {
@@ -158,9 +158,9 @@ export default function Stats() {
                 </p>
               </div>
 
-              {/* Número Gigante na base com contagem rápida em azul escuro */}
+              {/* Número Gigante na base com contagem rápida em azul escuro perfeitamente alinhado */}
               <div className="relative z-10 mt-8 pt-4 flex items-baseline">
-                <div className="font-avenue font-black text-6xl sm:text-7xl lg:text-8xl tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent drop-shadow-sm">
+                <div className="font-avenue font-black text-6xl sm:text-7xl lg:text-8xl tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent drop-shadow-sm whitespace-nowrap">
                   <CountUp end={stat.value} start={isInView} prefix={stat.prefix} suffix={stat.suffix} />
                 </div>
               </div>
