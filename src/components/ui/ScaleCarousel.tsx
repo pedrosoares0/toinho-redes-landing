@@ -1,24 +1,16 @@
-import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
 export interface ScaleCarouselItem {
   id: string;
   name: string;
   subtitle: string;
-  badge: string;
-  tag: string;
-  description: string;
-  material: string;
-  specs: string[];
   image: string;
-  whatsappUrl: string;
 }
 
 export interface ScaleCarouselProps<ItemT extends ScaleCarouselItem = ScaleCarouselItem> {
   data?: ItemT[];
-  renderItem?: ({ item, index }: { item: ItemT; index: number }) => ReactNode;
   itemWidth?: number;
   itemHeight?: number;
   spacing?: number;
@@ -31,64 +23,31 @@ export const defaultProducts: ScaleCarouselItem[] = [
   {
     id: "4faixas",
     name: "4 Faixas",
-    subtitle: "A Mais Pedida do Brasil",
-    badge: "CAMPEÃ DE VENDAS",
-    tag: "A MAIS PEDIDA",
-    description:
-      "O modelo mais resistente do mercado. Quatro faixas reforçadas que garantem tensão perfeita, sem afrouxar com o impacto de bolas potentes.",
-    material: "100% NYLON VIRGEM",
-    specs: ["Tensão Máxima", "4 Faixas Reforçadas", "Proteção Solar UV", "Acabamento Militar"],
+    subtitle: "A Mais Pedida",
     image: "/4faixas.webp",
-    whatsappUrl:
-      "https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20saber%20mais%20sobre%20a%20rede%20de%204%20faixas.",
   },
   {
     id: "3faixas",
     name: "3 Faixas",
     subtitle: "A Clássica Praiana",
-    badge: "PADRÃO PRAIANO",
-    tag: "A CLÁSSICA",
-    description:
-      "Rede profissional com tripla camada de reforço nas faixas superior e laterais. Ideal para treinos e jogos de futevôlei e vôlei de praia.",
-    material: "100% NYLON VIRGEM",
-    specs: ["Triplo Reforço", "Proteção Solar UV", "Anti-Maresia", "Lona Impermeável"],
     image: "/3faixas3.webp",
-    whatsappUrl:
-      "https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20um%20or%C3%A7amento%20da%20rede%20de%203%20faixas.",
   },
   {
     id: "orelha",
     name: "Orelha",
-    subtitle: "Design com Abas de Ajuste",
-    badge: "DESIGN REFORÇADO",
-    tag: "ESTILIZADA",
-    description:
-      "Fixação lateral anatômica com abas reforçadas em formato 'orelha'. Ajuste milimétrico sem deformação nos postes de madeira ou ferro.",
-    material: "100% NYLON VIRGEM",
-    specs: ["Fixação Anatômica", "Zero Deformação", "Costura Trançada", "Proteção UV"],
+    subtitle: "Design Reforçado",
     image: "/img/catalog-orelha.webp",
-    whatsappUrl:
-      "https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20saber%20mais%20sobre%20a%20rede%20orelha.",
   },
   {
     id: "profissional",
     name: "Profissional",
-    subtitle: "Padrão de Competições",
-    badge: "OFICIAL TORNEIOS",
-    tag: "COMPETIÇÕES",
-    description:
-      "Configuração de elite homologada para campeonatos oficiais e grandes arenas. Cabo interno de aço encapado e malha de alta densidade.",
-    material: "100% NYLON VIRGEM",
-    specs: ["Cabo de Aço Encapado", "Malha Oficial CBV", "Costura Dupla", "Anti-UV"],
+    subtitle: "Competições Oficiais",
     image: "/foto (1).jpeg",
-    whatsappUrl:
-      "https://wa.me/5571987974822?text=Fala%20Toinho!%20Vou%20precisar%20de%20redes%20profissionais%20para%20um%20campeonato.",
   },
 ];
 
 export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
   data = defaultProducts as unknown as ItemT[],
-  renderItem,
   spacing = 20,
   scaleRange = [1.6, 1, 1.6],
   rotationRange = [15, 0, -10],
@@ -120,11 +79,12 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
 
   // Largura de cada card no carrossel
   const itemWidth = isMobile
-    ? Math.min(containerWidth - 32, 360)
+    ? Math.min(containerWidth - 48, 360)
     : isTablet
-    ? Math.min(containerWidth - 80, 580)
+    ? Math.min(containerWidth - 100, 560)
     : 720;
 
+  const itemHeight = isMobile ? 380 : isTablet ? 450 : 500;
   const gap = spacing;
 
   const prev = useCallback(() => {
@@ -163,8 +123,8 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
 
   const handleTouchEnd = () => {
     if (dragStartX.current === null) return;
-    if (dragOffset < -50) next();
-    else if (dragOffset > 50) prev();
+    if (dragOffset < -45) next();
+    else if (dragOffset > 45) prev();
 
     dragStartX.current = null;
     setDragOffset(0);
@@ -291,105 +251,48 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
               }}
               style={{
                 width: `${itemWidth}px`,
+                height: `${itemHeight}px`,
                 transition: isDragging
                   ? "none"
                   : "opacity 400ms ease, transform 600ms cubic-bezier(0.16, 1, 0.3, 1)",
               }}
               className={cn(
-                "shrink-0 flex flex-col rounded-3xl bg-white dark:bg-brand-darkCard/85 border border-brand-blue/10 dark:border-white/10 overflow-hidden shadow-xl",
+                "relative shrink-0 overflow-hidden rounded-3xl bg-slate-950 border border-white/10 shadow-2xl select-none",
                 isFocal
-                  ? "opacity-100 ring-1 ring-brand-blue/20 dark:ring-white/20 shadow-2xl"
-                  : "opacity-60 hover:opacity-85 scale-[0.96]"
+                  ? "opacity-100 ring-1 ring-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-20"
+                  : "opacity-45 hover:opacity-75 scale-[0.93] cursor-pointer z-10"
               )}
             >
-              {/* Image Container com Scale & Rotation interpolados */}
-              <div
-                style={{
-                  height: isMobile ? "260px" : isTablet ? "320px" : "360px",
-                }}
-                className="relative w-full overflow-hidden bg-slate-950 flex items-center justify-center select-none"
-              >
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading={index < 2 ? "eager" : "lazy"}
-                    decoding="async"
-                    draggable={false}
-                    style={{
-                      transform: `scale(${currentScale}) rotate(${currentRotation}deg)`,
-                      transition: isDragging
-                        ? "none"
-                        : "transform 600ms cubic-bezier(0.16, 1, 0.3, 1)",
-                    }}
-                    className="h-full w-full object-cover object-center will-change-transform"
-                  />
-                )}
+              {/* Imagem de Fundo com Escala e Rotação interpoladas */}
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                  draggable={false}
+                  style={{
+                    transform: `scale(${currentScale}) rotate(${currentRotation}deg)`,
+                    transition: isDragging
+                      ? "none"
+                      : "transform 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover object-center will-change-transform"
+                />
+              )}
 
-                {/* Badge Superior */}
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="px-3.5 py-1.5 rounded-full bg-brand-blue/90 dark:bg-slate-900/90 backdrop-blur-md text-[10px] font-sans font-black uppercase tracking-[0.22em] text-white border border-white/15 shadow-sm">
-                    {item.badge}
-                  </span>
-                </div>
+              {/* Gradiente escuro sobre a imagem para contraste limpo */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent" />
 
-                {/* Gradiente inferior suave para contraste */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20" />
-              </div>
+              {/* Textos DIRETO SOBRE A FOTO (Letras Brancas e Azul Bebê) */}
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 md:p-10 pointer-events-none flex flex-col">
+                <span className="font-sans text-xs sm:text-sm font-black uppercase tracking-[0.3em] text-brand-lightBlue drop-shadow-md mb-1 sm:mb-2">
+                  {item.subtitle}
+                </span>
 
-              {/* Conteúdo do Item (renderItem ou default) */}
-              <div className="p-6 sm:p-8 flex flex-col justify-between flex-1">
-                {renderItem ? (
-                  renderItem({ item, index })
-                ) : (
-                  <div>
-                    <div className="flex items-center justify-between gap-4 mb-2">
-                      <span className="font-sans text-[11px] font-black uppercase tracking-[0.25em] text-brand-lightBlue">
-                        {item.tag}
-                      </span>
-                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-brand-blue/50 dark:text-white/40">
-                        {item.material}
-                      </span>
-                    </div>
-
-                    <h3 className="font-avenue text-3xl sm:text-4xl md:text-5xl font-black uppercase text-brand-blue dark:text-white tracking-tight leading-none mb-2">
-                      {item.name}
-                    </h3>
-
-                    <p className="font-sans text-xs sm:text-sm text-brand-blue/70 dark:text-white/70 leading-relaxed mb-4">
-                      {item.description}
-                    </p>
-
-                    {/* Especificações em Pills */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {item.specs.map((spec) => (
-                        <span
-                          key={spec}
-                          className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-white/5 border border-brand-blue/10 dark:border-white/10 font-sans text-[10px] font-bold uppercase tracking-wider text-brand-blue/80 dark:text-white/80"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Botão de Solicitação Direta via WhatsApp */}
-                    <div className="pt-2 flex items-center justify-between flex-wrap gap-4 border-t border-brand-blue/10 dark:border-white/10">
-                      <a
-                        href={item.whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-sans font-black text-xs uppercase tracking-[0.16em] shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 active:scale-95"
-                      >
-                        <FaWhatsapp className="h-4 w-4" />
-                        Pedir pelo WhatsApp
-                      </a>
-
-                      <span className="font-sans text-[11px] font-black uppercase tracking-widest text-brand-blue/50 dark:text-white/50">
-                        Fabricação Sob Medida
-                      </span>
-                    </div>
-                  </div>
-                )}
+                <h3 className="font-avenue text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase text-white tracking-tight leading-none drop-shadow-xl">
+                  {item.name}
+                </h3>
               </div>
             </div>
           );
