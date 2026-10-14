@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import RadiantButton from "./RadiantButton";
+import CosmicButton from "./cosmic-button";
 import { cn } from "@/lib/utils";
 
 export interface ScaleCarouselItem {
@@ -307,14 +307,11 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
                   {item.name}
                 </h3>
 
-                {/* Botão Oficial RadiantButton com texto "ORÇAMENTO" */}
+                {/* Botão Oficial Cosmic Button com texto "ORÇAMENTO" */}
                 <div className="pointer-events-auto">
-                  <RadiantButton
-                    href={item.whatsappUrl}
-                    highlightColor="#80C2FD"
-                  >
+                  <CosmicButton href={item.whatsappUrl}>
                     ORÇAMENTO
-                  </RadiantButton>
+                  </CosmicButton>
                 </div>
               </div>
             </div>

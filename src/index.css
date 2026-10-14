@@ -104,6 +104,29 @@ footer[id] {
   }
 }
 
+@keyframes cosmic-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes cosmic-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.animate-cosmic-spin {
+  animation: cosmic-spin 3s linear infinite;
+}
+.animate-cosmic-spin-slow {
+  animation: cosmic-spin-slow 5s linear infinite;
+}
+
 /* Oculta qualquer badge, drawer de deploy preview ou widget injetado pelo Netlify */
 #netlify-badge,
 .netlify-badge,

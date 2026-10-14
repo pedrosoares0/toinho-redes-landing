@@ -1,62 +1,108 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'motion/react';
-import { useInView } from '@/lib/hooks';
-
-const STATS_MEDIA = {
-  gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzEyMWY1MzQ0YzQ1YWU1MTU3MTg4NTU3ZDk0ZWI2ZTM1ZDRhYmM1MSZjdD1n/Z3Ii3Jo58bRC0qnCW4/giphy.gif',
-  localGif: '/img/stats-action.gif',
-  fallback: '/img/stats-desktop.webp',
-};
+import { motion, useInView } from 'motion/react';
 
 /**
- * Contador numérico com interpolação de física suave.
- * Atualiza direto no nó do DOM para zero re-renders do React e 60fps constantes.
+ * Contador numérico dinâmico que anima de 0 até o valor final assim que entra na tela.
+ * Utiliza interpolação easeOutExpo para desaceleração suave e visual marcante.
  */
-function CountUp({ end, duration = 2, start }: { end: number; duration?: number; start: boolean }) {
-  const ref = useRef<HTMLSpanElement>(null);
+function CountUp({
+  end,
+  duration = 2.4,
+  start,
+  prefix = "",
+  suffix = "",
+}: {
+  end: number;
+  duration?: number;
+  start: boolean;
+  prefix?: string;
+  suffix?: string;
+}) {
+  const [count, setCount] = useState(0);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el || !start) return;
+    if (!start || hasAnimated.current) return;
+    hasAnimated.current = true;
 
-    let raf = 0;
-    let t0 = 0;
+    let startTimestamp: number | null = null;
+    let rafId: number;
 
-    const tick = (t: number) => {
-      if (!t0) t0 = t;
-      const p = Math.min((t - t0) / (duration * 1000), 1);
-      const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
-      el.textContent = Math.floor(eased * end).toLocaleString('pt-BR');
-      if (p < 1) raf = requestAnimationFrame(tick);
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
+      const progress = Math.min(elapsed / (duration * 1000), 1);
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(ease * end));
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      } else {
+        setCount(end);
+      }
     };
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
   }, [start, end, duration]);
 
-  return <span ref={ref}>0</span>;
+  return (
+    <span>
+      {prefix}
+      {count.toLocaleString('pt-BR')}
+      {suffix}
+    </span>
+  );
 }
 
 export default function Stats() {
-  const [sectionRef, inView] = useInView<HTMLElement>('100px');
-  const [mediaSrc, setMediaSrc] = useState(STATS_MEDIA.gif);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
 
-  const handleMediaError = () => {
-    setMediaSrc((prev) => {
-      if (prev === STATS_MEDIA.gif) return STATS_MEDIA.localGif;
-      return STATS_MEDIA.fallback;
-    });
-  };
+  const stats = [
+    {
+      value: 930,
+      prefix: "+",
+      suffix: "",
+      kicker: "Alcance Nacional",
+      title: "Quadras no Brasil",
+      description: "Presente em clubes tradicionais, condomínios e grandes arenas de norte a sul.",
+    },
+    {
+      value: 200,
+      prefix: "+",
+      suffix: "",
+      kicker: "Competições",
+      title: "Torneios Oficiais",
+      description: "A marca de confiança escolhida por federações e circuitos profissionais.",
+    },
+    {
+      value: 10,
+      prefix: "",
+      suffix: " ANOS",
+      kicker: "Tradição",
+      title: "De Liderança",
+      description: "Uma década de fabricação artesanal sob medida e acabamento reforçado.",
+    },
+    {
+      value: 100,
+      prefix: "",
+      suffix: "%",
+      kicker: "Qualidade",
+      title: "Nylon Virgem",
+      description: "Fibras de alta densidade com proteção solar anti-UV para máxima durabilidade.",
+    },
+  ];
 
   return (
     <section
       id="sobre"
       ref={sectionRef}
-      className="relative w-full bg-white dark:bg-brand-darkBlue py-10 sm:py-14 md:py-18 overflow-hidden text-brand-blue dark:text-white transition-colors duration-300 border-y border-brand-blue/10 dark:border-white/10"
+      className="relative w-full bg-white dark:bg-brand-darkBlue py-12 sm:py-16 md:py-20 text-brand-blue dark:text-white transition-colors duration-300 border-y border-brand-blue/10 dark:border-white/10"
     >
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6">
-        {/* Cabeçalho Editorial Profissional */}
-        <div className="max-w-4xl mb-6 md:mb-10">
+        {/* Cabeçalho Editorial Equilibrado */}
+        <div className="max-w-3xl mb-8 md:mb-12">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -76,7 +122,7 @@ export default function Stats() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="font-avenue text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-none text-brand-blue dark:text-white"
           >
-            A tradição das <span className="text-brand-secondaryBlue dark:text-brand-lightBlue">principais quadras.</span>
+            A mais famosa <span className="text-brand-secondaryBlue dark:text-brand-lightBlue">da Bahia.</span>
           </motion.h2>
 
           <motion.p
@@ -84,119 +130,49 @@ export default function Stats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-2.5 max-w-2xl font-sans text-xs sm:text-sm font-medium leading-relaxed tracking-wide text-brand-blue/70 dark:text-white/70"
+            className="mt-2.5 font-sans text-xs sm:text-sm font-medium leading-relaxed tracking-wide text-brand-blue/70 dark:text-white/70"
           >
-            Liderança absoluta em redes esportivas profissionais. Fabricação artesanal sob medida com 100% nylon virgem e proteção anti-UV contra sol, vento e maresia.
+            Liderança absoluta em redes esportivas profissionais. Desenvolvidas com 100% nylon virgem e proteção anti-UV para suportar sol forte, vento constante e maresia.
           </motion.p>
         </div>
 
-        {/* Grid de Alta Performance: GIF de Ação + 3 Métricas */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-          {/* Lado Esquerdo: GIF com fallback e altura rigorosamente controlada */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="lg:col-span-6 relative h-[320px] sm:h-[380px] lg:h-[430px] w-full overflow-hidden rounded-3xl border border-brand-blue/10 dark:border-white/10 shadow-lg bg-slate-900 group"
-          >
-            <img
-              src={mediaSrc}
-              alt="Partida oficial com rede Toinho Redes"
-              loading="lazy"
-              decoding="async"
-              onError={handleMediaError}
-              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-            />
-
-            {/* Gradiente sutil para legibilidade da legenda */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
-
-            {/* Legenda minimalista */}
-            <div className="absolute bottom-5 left-5 right-5 pointer-events-none">
-              <p className="font-sans text-[10px] font-black uppercase tracking-[0.25em] text-brand-lightBlue">
-                Salvador · Bahia
-              </p>
-              <p className="font-avenue text-base sm:text-lg font-black uppercase text-white tracking-tight mt-0.5">
-                Padrão Oficial das Principais Arenas
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Lado Direito: Os 3 Cards de Métricas compactos e sem vazios */}
-          <div className="lg:col-span-6 flex flex-col justify-center gap-3 sm:gap-3.5">
-            {/* Métrica 1: 930 Quadras */}
+        {/* Grid de Métricas: 4 Cards com Animação de Contagem Dinâmica */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {stats.map((stat, index) => (
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
+              key={stat.title}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="rounded-2xl sm:rounded-3xl border border-brand-blue/10 dark:border-white/10 bg-white dark:bg-white/[0.03] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-brand-blue/20 dark:hover:border-white/20"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="rounded-2xl sm:rounded-3xl border border-brand-blue/10 dark:border-white/10 bg-white dark:bg-white/[0.03] p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-brand-blue/20 dark:hover:border-white/20 flex flex-col justify-between"
             >
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-avenue font-black text-2xl sm:text-3xl text-brand-secondaryBlue dark:text-brand-lightBlue leading-none">
-                  +
+              <div>
+                <span className="font-sans text-[10px] font-black uppercase tracking-[0.25em] text-brand-secondaryBlue dark:text-brand-lightBlue">
+                  {stat.kicker}
                 </span>
-                <span className="font-avenue font-black text-4xl sm:text-5xl lg:text-6xl text-brand-blue dark:text-white tracking-tighter leading-none">
-                  <CountUp end={930} start={inView} />
-                </span>
-              </div>
-              <h3 className="font-avenue text-base sm:text-lg font-black uppercase text-brand-blue dark:text-white tracking-tight mt-2">
-                Quadras Equipadas no Brasil
-              </h3>
-              <p className="font-sans text-xs text-brand-blue/70 dark:text-white/60 leading-relaxed mt-1">
-                Presente em clubes tradicionais, condomínios, centros esportivos e arenas profissionais de norte a sul.
-              </p>
-            </motion.div>
 
-            {/* Métrica 2: 200 Eventos */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-2xl sm:rounded-3xl border border-brand-blue/10 dark:border-white/10 bg-white dark:bg-white/[0.03] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-brand-blue/20 dark:hover:border-white/20"
-            >
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-avenue font-black text-2xl sm:text-3xl text-brand-secondaryBlue dark:text-brand-lightBlue leading-none">
-                  +
-                </span>
-                <span className="font-avenue font-black text-4xl sm:text-5xl lg:text-6xl text-brand-blue dark:text-white tracking-tighter leading-none">
-                  <CountUp end={200} start={inView} />
-                </span>
-              </div>
-              <h3 className="font-avenue text-base sm:text-lg font-black uppercase text-brand-blue dark:text-white tracking-tight mt-2">
-                Eventos & Campeonatos Oficiais
-              </h3>
-              <p className="font-sans text-xs text-brand-blue/70 dark:text-white/60 leading-relaxed mt-1">
-                A marca de confiança escolhida por federações, circuitos profissionais e grandes competições esportivas.
-              </p>
-            </motion.div>
+                <div className="flex items-baseline gap-1 mt-2">
+                  {stat.prefix && (
+                    <span className="font-avenue font-black text-2xl sm:text-3xl text-brand-secondaryBlue dark:text-brand-lightBlue leading-none">
+                      {stat.prefix}
+                    </span>
+                  )}
+                  <span className="font-avenue font-black text-4xl sm:text-5xl lg:text-6xl text-brand-blue dark:text-white tracking-tighter leading-none">
+                    <CountUp end={stat.value} start={isInView} suffix={stat.suffix} />
+                  </span>
+                </div>
 
-            {/* Métrica 3: 10 Anos */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-2xl sm:rounded-3xl border border-brand-blue/10 dark:border-white/10 bg-white dark:bg-white/[0.03] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-brand-blue/20 dark:hover:border-white/20"
-            >
-              <div className="flex items-baseline gap-2">
-                <span className="font-avenue font-black text-4xl sm:text-5xl lg:text-6xl text-brand-blue dark:text-white tracking-tighter leading-none">
-                  <CountUp end={10} start={inView} />
-                </span>
-                <span className="font-avenue font-black text-xl sm:text-2xl text-brand-secondaryBlue dark:text-brand-lightBlue">
-                  ANOS
-                </span>
+                <h3 className="font-avenue text-base sm:text-lg font-black uppercase text-brand-blue dark:text-white tracking-tight mt-3">
+                  {stat.title}
+                </h3>
               </div>
-              <h3 className="font-avenue text-base sm:text-lg font-black uppercase text-brand-blue dark:text-white tracking-tight mt-2">
-                De Tradição & Liderança
-              </h3>
-              <p className="font-sans text-xs text-brand-blue/70 dark:text-white/60 leading-relaxed mt-1">
-                Uma década de fabricação artesanal sob medida, acabamento reforçado e durabilidade comprovada.
+
+              <p className="font-sans text-xs text-brand-blue/70 dark:text-white/60 leading-relaxed mt-2 pt-3 border-t border-brand-blue/5 dark:border-white/5">
+                {stat.description}
               </p>
             </motion.div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
