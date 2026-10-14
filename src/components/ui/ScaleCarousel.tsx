@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import RadiantButton from "./RadiantButton";
 import { cn } from "@/lib/utils";
 
 export interface ScaleCarouselItem {
@@ -201,25 +201,27 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Abas Superiores de Seleção Rápida dos Modelos */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-4 flex-wrap">
-        {data.map((item, index) => {
-          const isActive = index === currentIndex;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setCurrentIndex(index)}
-              className={cn(
-                "px-4 sm:px-5 py-1.5 sm:py-2 rounded-full font-sans text-[11px] sm:text-xs font-black uppercase tracking-[0.18em] transition-all duration-300",
-                isActive
-                  ? "bg-brand-blue dark:bg-white text-white dark:text-brand-darkBlue shadow-md shadow-brand-blue/20 scale-105"
-                  : "bg-slate-200/70 dark:bg-white/5 text-brand-blue/60 dark:text-white/60 hover:text-brand-blue dark:hover:text-white hover:bg-slate-300/70 dark:hover:bg-white/10"
-              )}
-            >
-              {item.name}
-            </button>
-          );
-        })}
+      {/* Seletor Segmented Pill Capsule (Estilo Toggle Switch da imagem de referência) */}
+      <div className="flex items-center justify-center mb-5 sm:mb-7 px-4">
+        <div className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+          {data.map((item, index) => {
+            const isActive = index === currentIndex;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentIndex(index)}
+                className={cn(
+                  "relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-sans text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 select-none",
+                  isActive
+                    ? "bg-[#0d59f2] text-white shadow-md shadow-blue-600/30 font-black"
+                    : "text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-white/5"
+                )}
+              >
+                {item.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Trilho do Carrossel (Hardware accelerated) */}
@@ -305,17 +307,14 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
                   {item.name}
                 </h3>
 
-                {/* Botão Oficial Fazer Orçamento (Sem verde: Branco luxuoso com tipografia azul royal) */}
+                {/* Botão Oficial RadiantButton com texto "ORÇAMENTO" */}
                 <div className="pointer-events-auto">
-                  <a
+                  <RadiantButton
                     href={item.whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2.5 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-white hover:bg-brand-lightBlue text-brand-blue hover:text-brand-darkBlue font-sans font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_12px_28px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_32px_rgba(128,194,253,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/60"
+                    highlightColor="#80C2FD"
                   >
-                    <FaWhatsapp className="text-base sm:text-lg text-brand-blue shrink-0" />
-                    <span>Fazer Orçamento</span>
-                  </a>
+                    ORÇAMENTO
+                  </RadiantButton>
                 </div>
               </div>
             </div>

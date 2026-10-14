@@ -4,10 +4,7 @@ import TextReveal from "./ui/text-reveal";
 
 export default function Catalogue() {
   return (
-    <section id="catalogo" className="py-10 sm:py-14 md:py-16 bg-slate-50 dark:bg-brand-darkCard/60 overflow-hidden relative flex flex-col justify-center transition-colors duration-300">
-      {/* Ambient Lighting Gradients */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-brand-lightBlue/10 dark:bg-brand-blue/15 rounded-full blur-[140px] pointer-events-none" />
-
+    <section id="catalogo" className="py-10 sm:py-14 md:py-16 bg-white dark:bg-brand-darkBlue overflow-hidden relative flex flex-col justify-center transition-colors duration-300">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative z-10 w-full">
         <div className="flex flex-col mb-4 sm:mb-6 relative">
           <motion.div 
@@ -16,7 +13,7 @@ export default function Catalogue() {
             viewport={{ once: true }}
             className="flex items-center gap-3 mb-2"
           >
-            <div className="h-px w-8 bg-brand-blue/40 dark:bg-brand-lightBlue/40" />
+            <div className="h-px w-8 bg-brand-blue/30 dark:bg-brand-lightBlue/40" />
             <span className="text-brand-blue/80 dark:text-brand-lightBlue text-[10px] font-sans font-black uppercase tracking-[0.45em]">
               Catálogo Oficial
             </span>

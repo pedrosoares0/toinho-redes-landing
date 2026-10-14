@@ -7,8 +7,6 @@ export default function Gallery() {
     <section id="portfolio" className="relative bg-white dark:bg-brand-darkBlue py-10 sm:py-14 md:py-16 transition-colors duration-300 overflow-hidden">
       {/* Cabeçalho */}
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 mb-4 sm:mb-6">
-        <div className="pointer-events-none absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-brand-blue/[0.02] dark:from-white/[0.01] to-transparent" />
-
         <div className="relative flex flex-col">
           <motion.div
             initial={{ opacity: 0, x: -20 }}

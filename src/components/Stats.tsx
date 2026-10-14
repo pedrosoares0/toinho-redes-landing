@@ -52,7 +52,7 @@ export default function Stats() {
     <section
       id="sobre"
       ref={sectionRef}
-      className="relative w-full bg-slate-50 dark:bg-brand-darkCard/40 py-10 sm:py-14 md:py-18 overflow-hidden text-brand-blue dark:text-white transition-colors duration-300 border-y border-brand-blue/10 dark:border-white/10"
+      className="relative w-full bg-white dark:bg-brand-darkBlue py-10 sm:py-14 md:py-18 overflow-hidden text-brand-blue dark:text-white transition-colors duration-300 border-y border-brand-blue/10 dark:border-white/10"
     >
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6">
         {/* Cabeçalho Editorial Profissional */}
