@@ -52,10 +52,10 @@ export default function Partners() {
   return (
     <section
       ref={sectionRef}
-      className="py-16 md:py-24 bg-white dark:bg-brand-darkBlue relative overflow-hidden transition-colors duration-300 border-b border-brand-blue/5 dark:border-white/5"
+      className="py-10 md:py-16 bg-white dark:bg-brand-darkBlue relative overflow-hidden transition-colors duration-300 border-b border-brand-blue/5 dark:border-white/5"
     >
       <div className="w-full relative z-10">
-        <div className="mb-10 md:mb-14 text-center px-4 max-w-3xl mx-auto">
+        <div className="mb-6 md:mb-8 text-center px-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-3 mb-3">
             <div className="h-px w-8 bg-brand-blue/30 dark:bg-brand-lightBlue/40" />
             <span className="font-sans text-[10px] font-black uppercase tracking-[0.45em] text-brand-blue/70 dark:text-brand-lightBlue">

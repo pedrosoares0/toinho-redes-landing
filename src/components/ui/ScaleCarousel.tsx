@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
 export interface ScaleCarouselItem {
@@ -7,6 +8,7 @@ export interface ScaleCarouselItem {
   name: string;
   subtitle: string;
   image: string;
+  whatsappUrl: string;
 }
 
 export interface ScaleCarouselProps<ItemT extends ScaleCarouselItem = ScaleCarouselItem> {
@@ -25,24 +27,28 @@ export const defaultProducts: ScaleCarouselItem[] = [
     name: "4 Faixas",
     subtitle: "A Mais Pedida",
     image: "/4faixas.webp",
+    whatsappUrl: "https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20saber%20mais%20sobre%20a%20rede%20de%204%20faixas.",
   },
   {
     id: "3faixas",
     name: "3 Faixas",
     subtitle: "A Clássica Praiana",
     image: "/3faixas3.webp",
+    whatsappUrl: "https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20um%20or%C3%A7amento%20da%20rede%20de%203%20faixas.",
   },
   {
     id: "orelha",
     name: "Orelha",
     subtitle: "Design Reforçado",
     image: "/img/catalog-orelha.webp",
+    whatsappUrl: "https://wa.me/5571987974822?text=Fala%20Toinho!%20Queria%20saber%20mais%20sobre%20a%20rede%20orelha.",
   },
   {
     id: "profissional",
     name: "Profissional",
     subtitle: "Competições Oficiais",
     image: "/foto (1).jpeg",
+    whatsappUrl: "https://wa.me/5571987974822?text=Fala%20Toinho!%20Vou%20precisar%20de%20redes%20profissionais%20para%20um%20campeonato.",
   },
 ];
 
@@ -77,14 +83,14 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
   const isMobile = containerWidth < 640;
   const isTablet = containerWidth >= 640 && containerWidth < 1024;
 
-  // Largura de cada card no carrossel
+  // Largura e altura calibradas para caber perfeitamente na viewport
   const itemWidth = isMobile
-    ? Math.min(containerWidth - 48, 360)
+    ? Math.min(containerWidth - 40, 350)
     : isTablet
-    ? Math.min(containerWidth - 100, 560)
-    : 720;
+    ? Math.min(containerWidth - 80, 560)
+    : 680;
 
-  const itemHeight = isMobile ? 380 : isTablet ? 450 : 500;
+  const itemHeight = isMobile ? 350 : isTablet ? 410 : 450;
   const gap = spacing;
 
   const prev = useCallback(() => {
@@ -175,7 +181,7 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
       tabIndex={0}
       aria-label="Catálogo de Modelos Toinho Redes"
       className={cn(
-        "relative w-full max-w-[1400px] mx-auto select-none focus:outline-none overflow-hidden py-4",
+        "relative w-full max-w-[1400px] mx-auto select-none focus:outline-none overflow-hidden",
         className
       )}
       onTouchStart={handleTouchStart}
@@ -187,7 +193,7 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
       onMouseLeave={handleMouseLeave}
     >
       {/* Abas Superiores de Seleção Rápida dos Modelos */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 px-4 flex-wrap">
+      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-4 flex-wrap">
         {data.map((item, index) => {
           const isActive = index === currentIndex;
           return (
@@ -195,9 +201,9 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
               key={item.id}
               onClick={() => setCurrentIndex(index)}
               className={cn(
-                "px-4 sm:px-6 py-2 rounded-full font-sans text-[11px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all duration-300",
+                "px-4 sm:px-5 py-1.5 sm:py-2 rounded-full font-sans text-[11px] sm:text-xs font-black uppercase tracking-[0.18em] transition-all duration-300",
                 isActive
-                  ? "bg-brand-blue dark:bg-white text-white dark:text-brand-darkBlue shadow-lg shadow-brand-blue/20 scale-105"
+                  ? "bg-brand-blue dark:bg-white text-white dark:text-brand-darkBlue shadow-md shadow-brand-blue/20 scale-105"
                   : "bg-slate-200/70 dark:bg-white/5 text-brand-blue/60 dark:text-white/60 hover:text-brand-blue dark:hover:text-white hover:bg-slate-300/70 dark:hover:bg-white/10"
               )}
             >
@@ -210,7 +216,7 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
       {/* Trilho do Carrossel (Hardware accelerated) */}
       <div
         className={cn(
-          "flex items-stretch py-4",
+          "flex items-stretch py-2 sm:py-3",
           isDragging ? "cursor-grabbing" : "cursor-grab"
         )}
         style={{
@@ -222,18 +228,14 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
         }}
       >
         {data.map((item, index) => {
-          // Diferença relativa ao ponto de foco
           const diff = index - currentScrollValue;
 
           // Interpolação de Scale: [1.6, 1, 1.6]
-          // index - 1 => 1.6 | index => 1.0 | index + 1 => 1.6
           const absDiff = Math.min(Math.abs(diff), 1);
           const currentScale =
             scaleRange[1] + absDiff * (scaleRange[0] - scaleRange[1]);
 
           // Interpolação de Rotação: [15, 0, -10]
-          // diff > 0 (à direita): rotação positiva até rotationRange[0] (15deg)
-          // diff < 0 (à esquerda): rotação negativa até rotationRange[2] (-10deg)
           let currentRotation = 0;
           if (diff > 0) {
             currentRotation = Math.min(diff, 1) * rotationRange[0];
@@ -259,7 +261,7 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
               className={cn(
                 "relative shrink-0 overflow-hidden rounded-3xl bg-slate-950 border border-white/10 shadow-2xl select-none",
                 isFocal
-                  ? "opacity-100 ring-1 ring-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-20"
+                  ? "opacity-100 ring-1 ring-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-20"
                   : "opacity-45 hover:opacity-75 scale-[0.93] cursor-pointer z-10"
               )}
             >
@@ -284,15 +286,28 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
               {/* Gradiente escuro sobre a imagem para contraste limpo */}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent" />
 
-              {/* Textos DIRETO SOBRE A FOTO (Letras Brancas e Azul Bebê) */}
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 md:p-10 pointer-events-none flex flex-col">
-                <span className="font-sans text-xs sm:text-sm font-black uppercase tracking-[0.3em] text-brand-lightBlue drop-shadow-md mb-1 sm:mb-2">
+              {/* Textos e Botão de Orçamento DIRETO SOBRE A FOTO */}
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7 md:p-8 flex flex-col items-start z-20">
+                <span className="font-sans text-[11px] sm:text-xs font-black uppercase tracking-[0.28em] text-brand-lightBlue drop-shadow-md mb-1">
                   {item.subtitle}
                 </span>
 
-                <h3 className="font-avenue text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase text-white tracking-tight leading-none drop-shadow-xl">
+                <h3 className="font-avenue text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase text-white tracking-tight leading-none drop-shadow-xl mb-3 sm:mb-4">
                   {item.name}
                 </h3>
+
+                {/* Botão Oficial Fazer Orçamento WhatsApp */}
+                <div className="pointer-events-auto">
+                  <a
+                    href={item.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-green-500 via-emerald-600 to-green-500 text-white font-sans font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_10px_25px_-5px_rgba(34,197,94,0.6)] hover:shadow-[0_14px_30px_-4px_rgba(34,197,94,0.8)] hover:scale-105 active:scale-95 transition-all duration-300 border border-green-300/40"
+                  >
+                    <FaWhatsapp className="text-base sm:text-lg text-white shrink-0" />
+                    <span>Fazer Orçamento</span>
+                  </a>
+                </div>
               </div>
             </div>
           );
@@ -300,7 +315,7 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
       </div>
 
       {/* Controles Inferiores (Dots + Prev / Next) */}
-      <div className="mt-6 flex items-center justify-between px-4 sm:px-8">
+      <div className="mt-4 sm:mt-5 flex items-center justify-between px-4 sm:px-8">
         {/* Dots de Paginação + Contador */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
@@ -329,14 +344,14 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
           <button
             onClick={prev}
             aria-label="Modelo anterior"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-blue/15 dark:border-white/15 bg-white/80 dark:bg-brand-darkCard/80 backdrop-blur-md text-brand-blue dark:text-white shadow-sm hover:scale-105 active:scale-95 transition-all duration-200"
+            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-brand-blue/15 dark:border-white/15 bg-white/80 dark:bg-brand-darkCard/80 backdrop-blur-md text-brand-blue dark:text-white shadow-sm hover:scale-105 active:scale-95 transition-all duration-200"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
             aria-label="Próximo modelo"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-blue/15 dark:border-white/15 bg-white/80 dark:bg-brand-darkCard/80 backdrop-blur-md text-brand-blue dark:text-white shadow-sm hover:scale-105 active:scale-95 transition-all duration-200"
+            className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-brand-blue/15 dark:border-white/15 bg-white/80 dark:bg-brand-darkCard/80 backdrop-blur-md text-brand-blue dark:text-white shadow-sm hover:scale-105 active:scale-95 transition-all duration-200"
           >
             <ChevronRight className="h-5 w-5" />
           </button>

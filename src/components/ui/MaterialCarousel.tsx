@@ -233,7 +233,7 @@ export default function MaterialCarousel({
               }}
               className={cn(
                 "relative shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl",
-                "h-[390px] sm:h-[460px] md:h-[520px] lg:h-[560px]",
+                "h-[340px] sm:h-[400px] md:h-[450px] lg:h-[480px]",
                 "border border-brand-blue/10 dark:border-white/10",
                 isFocal &&
                   "scale-100 opacity-100 shadow-2xl ring-1 ring-white/20 z-20",
