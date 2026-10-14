@@ -7,6 +7,7 @@ import Catalogue from './components/Catalogue'
 import Stats from './components/Stats'
 import FAQ from './components/FAQ'
 import Footer from './components/Footer'
+import TextLoop from './components/TextLoop'
 import SmoothScroll from './components/ui/smooth-scroll'
 import ImagePreloader from './components/ui/image-preloader'
 import { ScrollProgress } from './components/ui/scroll-progress'
@@ -60,6 +61,28 @@ function App() {
         </Reveal>
         {/* Sem wrapper animado: transform no pai quebra position:sticky da galeria mobile */}
         <Gallery />
+
+        {/* Ribbon ondulada entre Em Quadra (Galeria) e Nossos Modelos (Catálogo) */}
+        <div className="relative w-full -my-8 sm:-my-12 md:-my-16 overflow-hidden z-20 pointer-events-none select-none">
+          <TextLoop
+            text="TOINHO✦ REDES"
+            shape="wave"
+            speed={70}
+            direction="forward"
+            separator="✦"
+            curviness={56}
+            fontSize={46}
+            fontWeight={800}
+            letterSpacing={2}
+            uppercase
+            color="#ffffff"
+            ribbon
+            ribbonColor="#0759de"
+            ribbonWidth={62}
+            pauseOnHover={false}
+          />
+        </div>
+
         <Reveal>
           <Catalogue />
         </Reveal>
