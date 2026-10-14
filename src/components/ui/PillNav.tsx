@@ -1,7 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { Sun, Moon, Menu, X, ArrowUpRight, MapPin, Instagram, MessageCircle } from 'lucide-react';
+import { Menu, X, ArrowUpRight, MapPin } from 'lucide-react';
+
+/**
+ * Site de página única (sem router): o "Link" interno é só uma âncora.
+ * Mantido para preservar o suporte a rotas internas sem puxar react-router-dom (~70KB).
+ */
+const Link = forwardRef<HTMLAnchorElement, Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & { to: string }>(
+  ({ to, ...props }, ref) => <a ref={ref} href={to} {...props} />
+);
+Link.displayName = 'Link';
 
 export type PillNavItem = {
   label: string;
@@ -41,23 +49,37 @@ const PillNav: React.FC<PillNavProps> = ({
   const resolvedPillTextColor = pillTextColor ?? baseColor;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
+  // Esconde a navbar ao rolar para baixo e mostra ao rolar para cima.
+  // Posição anterior em ref + rAF: o React só re-renderiza quando a visibilidade realmente muda.
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY < 50) {
+    let ticking = false;
+    const THRESHOLD = 6; // ignora micro-movimentos / jitter do touch
+
+    const update = () => {
+      ticking = false;
+      const y = window.scrollY;
+      if (y < 50) {
         setIsVisible(true);
-      } else if (currentScrollY > lastScrollY) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
+        lastScrollY.current = y;
+        return;
       }
-      setLastScrollY(currentScrollY);
+      const delta = y - lastScrollY.current;
+      if (Math.abs(delta) < THRESHOLD) return;
+      setIsVisible(delta < 0);
+      lastScrollY.current = y;
     };
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
 
 
@@ -300,8 +322,8 @@ const PillNav: React.FC<PillNavProps> = ({
     <>
       {/* Mobile Backdrop Overlay - Rendered outside transforming parent to prevent stacking context constraints */}
       <div
-        className={`fixed inset-0 bg-black/45 backdrop-blur-md md:hidden transition-opacity duration-300 z-[1005] ${
-          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 bg-black/45 backdrop-blur-md md:hidden transition-[opacity,visibility] duration-300 z-[1005] ${
+          isMobileMenuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
         }`}
         onClick={() => toggleMobileMenu()}
       />
@@ -309,14 +331,14 @@ const PillNav: React.FC<PillNavProps> = ({
       {/* MOBILE Menu Overlay - Rendered outside transforming parent so it covers full viewport smoothly */}
       <div
         ref={mobileMenuRef}
-        className="md:hidden fixed inset-0 w-screen h-screen z-[1010] backdrop-blur-sm bg-white/95 dark:bg-brand-darkBlue/98 border-b border-brand-blue/10 dark:border-white/5 overflow-hidden pointer-events-auto flex flex-col justify-between pt-6 pb-10 px-8"
+        className="md:hidden fixed inset-0 w-screen h-screen z-[1010] bg-white/95 dark:bg-brand-darkBlue/98 border-b border-brand-blue/10 dark:border-white/5 overflow-hidden pointer-events-auto flex flex-col justify-between pt-6 pb-10 px-8"
         style={{
           ...cssVars,
           visibility: 'hidden'
         }}
       >
         {/* Grain overlay for tactical texture */}
-        <div className="absolute inset-0 z-[-1] opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat" />
+        <div className="absolute inset-0 z-[-1] opacity-[0.03] bg-noise" />
 
         {/* Ambient Gradient Mesh Blobs for depth */}
         <div className="ambient-blob absolute top-[-10%] left-[-20%] w-[80vw] h-[80vw] max-w-[500px] max-h-[500px] rounded-full bg-brand-blue/15 dark:bg-brand-blue/10 blur-[100px] pointer-events-none" />
@@ -325,7 +347,7 @@ const PillNav: React.FC<PillNavProps> = ({
 
         {/* Integrated Header */}
         <div className="w-full flex items-center justify-between relative z-10 mb-6 mt-1">
-          <img src="logoToinho.png" alt="Toinho Redes" className="h-7 w-auto object-contain dark:brightness-0 dark:invert" />
+          <img src="/logoToinho.png" alt="Toinho Redes" className="h-7 w-auto object-contain dark:brightness-0 dark:invert" />
           <button
             onClick={() => toggleMobileMenu()}
             className="w-10 h-10 rounded-full inline-flex items-center justify-center bg-brand-blue/5 dark:bg-white/10 text-brand-blue dark:text-white border border-brand-blue/10 dark:border-white/10 active:scale-95 transition-all"
@@ -489,7 +511,7 @@ const PillNav: React.FC<PillNavProps> = ({
           aria-label="Primary"
           style={cssVars}
         >
-          <div className="absolute inset-0 z-[-1] opacity-[0.05] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat rounded-full" />
+          <div className="absolute inset-0 z-[-1] opacity-[0.05] pointer-events-none bg-noise rounded-full" />
 
           {isRouterLink(items?.[0]?.href) ? (
             <Link

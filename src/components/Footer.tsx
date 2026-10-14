@@ -1,5 +1,5 @@
 import { Instagram, Mail, Phone } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 export default function Footer() {
   return (
@@ -12,7 +12,8 @@ export default function Footer() {
         className="w-full overflow-hidden mb-12 flex justify-center px-6"
       >
         <img
-          src="logoToinho.png"
+          src="/logoToinho.png"
+          loading="lazy"
           alt="Toinho Redes"
           className="max-w-[200px] md:max-w-[300px] w-full h-auto object-contain dark:brightness-0 dark:invert"
         />
@@ -79,7 +80,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="hover:opacity-80 transition-opacity"
               >
-                <img src="minha-logo.png" alt="Criador" className="h-6 w-auto object-contain" />
+                <img src="/minha-logo.png" alt="Criador" loading="lazy" className="h-6 w-auto object-contain" />
               </a>
               <div className="flex gap-2">
                 <a

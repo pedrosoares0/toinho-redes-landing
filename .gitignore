@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Originais pesados (PNG ~24MB). Os WebP otimizados em /public são o que vai pro deploy.
+# Regenerar: npm run optimize:images
+assets-src/
+
+# Netlify
+.netlify
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

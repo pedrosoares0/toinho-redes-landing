@@ -1,68 +1,126 @@
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { MapPin } from "lucide-react";
 
+// Imagens servidas do próprio site (public/img) — geradas por `npm run optimize:images`
 export const galleryImages = [
   {
     title: "Clube Bahiano de Tênis",
     location: "Salvador, BA",
-    image:
-      "https://anotabahia.com/wp-content/uploads/2024/09/anotabahia-clube-baiano-de-tenis-recebe-o-ace-open-moura-dubeux-2024-whatsapp-image-2024-09-03-at-13.33.15-1200x800.jpeg",
+    image: "/img/gallery-clube-baiano.webp",
   },
   {
     title: "Federação Baiana de Futevôlei",
     location: "Bahia",
-    image: "foto (5).webp",
+    image: "/foto (5).webp",
   },
   {
     title: "Praiana",
     location: "Salvador, BA",
-    image:
-      "https://www.bahianoticias.com.br/fotos/hall_noticias/4901/mg/Soft%20opening%20Praiana_3.jpg",
+    image: "/img/gallery-praiana.webp",
   },
   {
     title: "Mali",
     location: "Salvador, BA",
-    image:
-      "https://cloudfront-us-east-1.images.arcpublishing.com/newr7/ZGVOOLIAXZDTNEBCOCTQGVCF4E.jpg",
+    image: "/img/gallery-mali.webp",
   },
   {
-    title: "BAHIA OPEN FUTEVOLEI",
-    location: "lAURO DE FREITAS, BA",
-    image:
-      "https://anotabahia.com/wp-content/uploads/2022/11/anotabahia-bahia-open-de-futevolei-bahia-open-de-futevolei.jpg",
+    title: "Bahia Open Futevôlei",
+    location: "Lauro de Freitas, BA",
+    image: "/img/gallery-bahia-open.webp",
   },
   {
-    title: "AABB - ASSOCIAÇÃO ATLÉTICA BANCO DO BRASIL",
-    location: "SALVADOR, VALENÇA, ITABUNA - BA",
-    image: "4faixas2.webp",
+    title: "AABB - Associação Atlética",
+    location: "Salvador, Valença, Itabuna - BA",
+    image: "/4faixas2.webp",
   },
 ];
 
-type GalleryItem = (typeof galleryImages)[number];
+export type GalleryItem = (typeof galleryImages)[number];
 
+// Enquadramentos verticais próprios para o mobile
 const MOBILE_IMAGE_OVERRIDES: Partial<Record<GalleryItem["title"], string>> = {
-  Praiana:
-    "https://www.bahianoticias.com.br/fotos/hall_noticias/4901/mg/Soft%20opening%20Praiana_3.jpg",
-  Mali:
-    "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200_webp/915c1b135567345.67b75ec924309.jpg",
-  "BAHIA OPEN FUTEVOLEI":
-    "https://canalgarra.com.br/wp-content/uploads/2022/11/WhatsApp-Image-2022-11-08-at-14.27.29.jpeg.webp",
+  Mali: "/img/gallery-mali-mobile.webp",
+  "Bahia Open Futevôlei": "/img/gallery-bahia-open-mobile.webp",
 };
 
-/** Mobile: cada slide gruda no topo até o próximo cobrir por cima */
+/** Intensidade do efeito de profundidade do stack mobile */
+const DEPTH_SCALE = 0.08;
+const DEPTH_SHADE = 0.55;
+
+/**
+ * Mobile: cada slide gruda no topo até o próximo cobrir por cima.
+ */
 export function MobileStickyStackGallery({ items }: { items: GalleryItem[] }) {
   const total = items.length;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const shadeRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const last: number[] = new Array(total).fill(-1);
+    let ticking = false;
+    let raf = 0;
+
+    const update = () => {
+      ticking = false;
+      const slideH = slideRefs.current[0]?.offsetHeight || window.innerHeight;
+      const rect = container.getBoundingClientRect();
+
+      if (rect.bottom < -slideH || rect.top > window.innerHeight + slideH) return;
+
+      const scrolled = -rect.top / slideH;
+
+      for (let i = 0; i < total; i++) {
+        const p = Math.min(1, Math.max(0, scrolled - i));
+        const q = Math.round(p * 500) / 500;
+        if (q === last[i]) continue;
+        last[i] = q;
+
+        const card = cardRefs.current[i];
+        const shade = shadeRefs.current[i];
+        if (card) card.style.transform = `scale(${1 - DEPTH_SCALE * q})`;
+        if (shade) shade.style.opacity = String(DEPTH_SHADE * q);
+      }
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [total]);
 
   return (
-    <div className="relative isolate md:hidden motion-reduce:hidden">
+    <div ref={containerRef} className="relative isolate md:hidden motion-reduce:hidden">
       {items.map((item, idx) => (
         <div
           key={item.title}
+          ref={(el) => {
+            slideRefs.current[idx] = el;
+          }}
           className="sticky top-0 h-svh w-full px-4 py-5"
           style={{ zIndex: idx + 1 }}
         >
           <div
+            ref={(el) => {
+              cardRefs.current[idx] = el;
+            }}
             className={cn(
-              "relative mx-auto h-[84svh] w-full max-w-md overflow-hidden rounded-3xl bg-transparent"
+              "relative mx-auto h-[84svh] w-full max-w-md overflow-hidden rounded-3xl bg-brand-darkBlue shadow-2xl ring-1 ring-white/10 will-change-transform [transform-origin:50%_30%]"
             )}
           >
             <img
@@ -70,45 +128,41 @@ export function MobileStickyStackGallery({ items }: { items: GalleryItem[] }) {
               src={MOBILE_IMAGE_OVERRIDES[item.title] ?? item.image}
               alt={item.title}
               loading={idx < 2 ? "eager" : "lazy"}
+              decoding="async"
+              draggable={false}
             />
 
-            {/* Só escurece a base — imagem permanece natural no resto */}
+            {/* Gradiente escuro para contraste puro */}
             <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-2/5 bg-gradient-to-t from-black/85 via-black/45 to-transparent"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/2 bg-gradient-to-t from-black/95 via-black/50 to-transparent"
               aria-hidden
             />
 
-            <div className="absolute left-5 top-5 z-20 flex items-center gap-2 rounded-full border border-white/30 bg-black/50 px-3 py-1.5 backdrop-blur-sm">
-              <span className="font-sans text-[9px] font-black uppercase tracking-[0.35em] text-white">
-                {String(idx + 1).padStart(2, "0")}
-              </span>
-              <span className="text-white/40">/</span>
-              <span className="font-sans text-[9px] font-black uppercase tracking-[0.35em] text-white/70">
-                {String(total).padStart(2, "0")}
-              </span>
-            </div>
+            {/* Conteúdo inferior: apenas localização e título */}
+            <div className="absolute bottom-0 left-0 right-0 z-20 p-6 pb-8">
+              <div className="mb-2 flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-brand-lightBlue shrink-0" />
+                <p className="font-sans text-[11px] font-black uppercase tracking-[0.3em] text-brand-lightBlue drop-shadow-md">
+                  {item.location}
+                </p>
+              </div>
 
-            <div className="absolute bottom-0 left-0 right-0 z-20 p-6 pb-12">
-              <p className="mb-2 font-sans text-[10px] font-black uppercase tracking-[0.35em] text-brand-lightBlue drop-shadow-md">
-                {item.location}
-              </p>
               <h3 className="font-avenue text-2xl font-black uppercase leading-[0.95] tracking-tight text-white drop-shadow-lg">
                 {item.title}
               </h3>
             </div>
 
-            {idx === 0 && (
-              <p
-                className="absolute bottom-4 left-0 right-0 z-20 text-center font-sans text-[9px] font-black uppercase tracking-[0.4em] text-white/80 drop-shadow-md"
-                aria-hidden
-              >
-                Role para a próxima
-              </p>
-            )}
+            {/* Véu de profundidade */}
+            <div
+              ref={(el) => {
+                shadeRefs.current[idx] = el;
+              }}
+              className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
+              aria-hidden
+            />
           </div>
         </div>
       ))}
-      {/* Permite scrollar além do último slide sticky */}
       <div className="h-svh" aria-hidden />
     </div>
   );
@@ -127,12 +181,16 @@ function MobileStaticGallery({ items }: { items: GalleryItem[] }) {
             src={MOBILE_IMAGE_OVERRIDES[item.title] ?? item.image}
             alt={item.title}
             loading="lazy"
+            decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent" />
           <div className="absolute bottom-0 left-0 w-full p-6">
-            <p className="mb-2 font-sans text-[10px] font-black uppercase tracking-[0.3em] text-brand-lightBlue">
-              {item.location}
-            </p>
+            <div className="mb-2 flex items-center gap-1.5">
+              <MapPin className="h-3 w-3 text-brand-lightBlue" />
+              <p className="font-sans text-[10px] font-black uppercase tracking-[0.3em] text-brand-lightBlue">
+                {item.location}
+              </p>
+            </div>
             <h3 className="font-avenue text-xl font-black uppercase tracking-tight text-white">
               {item.title}
             </h3>
@@ -143,35 +201,87 @@ function MobileStaticGallery({ items }: { items: GalleryItem[] }) {
   );
 }
 
+/**
+ * Desktop: Accordion limpo e editorial.
+ * Sem números em bolinhas e sem tags poluídas.
+ * Apenas o visual imersivo da foto, nome da arena e localização.
+ */
 function DesktopAccordionGallery({ items }: { items: GalleryItem[] }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+
   return (
-    <div className="hidden h-[600px] w-full max-w-7xl flex-row items-center gap-3 md:flex">
-      {items.map((item, idx) => (
-        <div
-          key={item.title}
-          className={cn(
-            "group relative h-full w-24 flex-grow cursor-pointer overflow-hidden rounded-2xl shadow-sm transition-all duration-500 ease-in-out hover:w-[600px] hover:shadow-2xl"
-          )}
-        >
-          <img
-            className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-            src={item.image}
-            alt={item.title}
-            loading={idx < 2 ? "eager" : "lazy"}
-          />
+    <div className="hidden h-[620px] w-full max-w-[1400px] flex-row items-center gap-3.5 md:flex">
+      {items.map((item, idx) => {
+        const isActive = activeIdx === idx;
 
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        return (
+          <div
+            key={item.title}
+            onClick={() => setActiveIdx(idx)}
+            onMouseEnter={() => setActiveIdx(idx)}
+            onFocus={() => setActiveIdx(idx)}
+            tabIndex={0}
+            role="button"
+            aria-label={`${item.title} - ${item.location}`}
+            className={cn(
+              "group relative h-full overflow-hidden rounded-3xl cursor-pointer select-none",
+              "transition-[flex,box-shadow,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              isActive
+                ? "flex-[4] shadow-2xl ring-1 ring-white/20"
+                : "flex-[0.85] hover:flex-[1.1] shadow-md ring-1 ring-white/10 opacity-80 hover:opacity-100"
+            )}
+          >
+            <img
+              className={cn(
+                "h-full w-full object-cover object-center transition-transform duration-700 ease-out",
+                isActive ? "scale-105" : "scale-100 group-hover:scale-105"
+              )}
+              src={item.image}
+              alt={item.title}
+              loading={idx < 2 ? "eager" : "lazy"}
+              decoding="async"
+              draggable={false}
+            />
 
-          <div className="absolute bottom-0 left-0 w-full translate-y-8 p-8 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-            <p className="mb-2 font-sans text-[10px] font-black uppercase tracking-[0.3em] text-brand-lightBlue">
-              {item.location}
-            </p>
-            <h3 className="font-avenue text-2xl font-black uppercase tracking-tight text-white md:text-3xl">
-              {item.title}
-            </h3>
+            {/* Overlay gradiente suave */}
+            <div
+              className={cn(
+                "pointer-events-none absolute inset-0 transition-opacity duration-500",
+                isActive
+                  ? "bg-gradient-to-t from-slate-950/95 via-slate-950/35 to-transparent opacity-100"
+                  : "bg-slate-950/50 group-hover:bg-slate-950/30 opacity-100"
+              )}
+            />
+
+            {/* Card Expandido: Somente Localização e Título imponente */}
+            {isActive && (
+              <div className="absolute inset-x-0 bottom-0 z-20 p-8 lg:p-10 pointer-events-none">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-brand-lightBlue drop-shadow" />
+                    <p className="font-sans text-xs font-black uppercase tracking-[0.3em] text-brand-lightBlue drop-shadow-md">
+                      {item.location}
+                    </p>
+                  </div>
+
+                  <h3 className="font-avenue text-3xl lg:text-5xl font-black uppercase leading-[0.9] tracking-tight text-white drop-shadow-xl max-w-2xl">
+                    {item.title}
+                  </h3>
+                </div>
+              </div>
+            )}
+
+            {/* Card Colapsado: Título vertical editorial limpo */}
+            {!isActive && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center p-4 pointer-events-none">
+                <span className="[writing-mode:vertical-rl] rotate-180 font-avenue text-lg lg:text-xl font-black uppercase tracking-wider text-white/80 group-hover:text-white transition-colors truncate max-h-[440px] drop-shadow-md">
+                  {item.title}
+                </span>
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -184,3 +294,5 @@ export default function ImageGallery() {
     </>
   );
 }
+
+

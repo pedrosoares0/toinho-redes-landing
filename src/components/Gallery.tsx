@@ -1,5 +1,5 @@
 import ImageGallery, { MobileStickyStackGallery, galleryImages } from "./ui/image-gallery";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import TextReveal from "./ui/text-reveal";
 
 export default function Gallery() {
@@ -44,16 +44,16 @@ export default function Gallery() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="flex items-center gap-4 md:hidden"
+              className="flex items-center gap-3 md:hidden rounded-2xl border border-brand-blue/10 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.03] backdrop-blur-md px-4 py-2.5 shadow-sm"
             >
               <div className="flex flex-col">
-                <span className="font-avenue text-3xl font-black text-brand-blue dark:text-white">+900</span>
-                <span className="font-sans text-[8px] font-black uppercase tracking-widest text-brand-blue/40 dark:text-white/40">
+                <span className="font-avenue text-2xl font-black text-brand-blue dark:text-white">+900</span>
+                <span className="font-sans text-[8px] font-black uppercase tracking-widest text-brand-blue/50 dark:text-white/50">
                   Instalações
                 </span>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-blue/10 dark:border-white/10">
-                <img src="favicon.png" alt="Logo" className="h-6 w-6 object-contain" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-blue/10 dark:border-white/10 bg-white/50 dark:bg-white/5">
+                <img src="/favicon.png" alt="Logo" loading="lazy" className="h-5 w-5 object-contain" />
               </div>
             </motion.div>
 
@@ -62,16 +62,16 @@ export default function Gallery() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="hidden items-center gap-6 md:flex"
+              className="hidden items-center gap-5 md:flex rounded-2xl border border-brand-blue/10 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.03] backdrop-blur-md px-5 py-3 shadow-sm"
             >
               <div className="flex flex-col items-end">
-                <span className="font-avenue text-4xl font-black text-brand-blue dark:text-white">+900</span>
-                <span className="font-sans text-[8px] font-black uppercase tracking-widest text-brand-blue/40 dark:text-white/40">
-                  Instalações
+                <span className="font-avenue text-3xl font-black text-brand-blue dark:text-white leading-none">+900</span>
+                <span className="font-sans text-[9px] font-black uppercase tracking-widest text-brand-blue/50 dark:text-white/50 mt-1">
+                  Instalações Homologadas
                 </span>
               </div>
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-brand-blue/10 dark:border-white/10">
-                <img src="favicon.png" alt="Logo" className="h-8 w-8 object-contain" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-blue/10 dark:border-white/10 bg-white/50 dark:bg-white/5 shadow-inner">
+                <img src="/favicon.png" alt="Logo" loading="lazy" className="h-6 w-6 object-contain" />
               </div>
             </motion.div>
           </div>
@@ -80,6 +80,9 @@ export default function Gallery() {
         {/* Desktop: galeria accordion dentro do container */}
         <div className="hidden md:block">
           <ImageGallery />
+          <p className="mt-4 text-right font-sans text-[9px] font-black uppercase tracking-[0.35em] text-brand-blue/40 dark:text-white/40">
+            Navegue pelos cards para ver cada arena
+          </p>
         </div>
       </div>
 

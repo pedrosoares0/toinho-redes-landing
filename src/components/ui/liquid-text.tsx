@@ -1,90 +1,96 @@
-//@ts-nocheck 
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
-
+import { useEffect, useRef } from "react";
+import type { FC } from "react";
 import { cn } from "@/lib/utils";
+import { useInView } from "@/lib/hooks";
 
-const morphTime = 1.5;
-const cooldownTime = 0.5;
+const MORPH_TIME = 1.5;
+const COOLDOWN_TIME = 0.5;
 
-const useMorphingText = (texts: string[]) => {
-  const textIndexRef = useRef(0);
-  const morphRef = useRef(0);
-  const cooldownRef = useRef(0);
-  const timeRef = useRef(new Date());
-
+/**
+ * Efeito "gooey" de troca de texto.
+ * Otimizações vs. versão anterior:
+ *  - o loop só roda quando o componente está visível (antes rodava 60fps o tempo todo, mesmo fora da tela);
+ *  - textContent só é escrito quando a palavra muda (antes era a cada frame);
+ *  - estilos estáticos durante o cooldown são escritos uma única vez;
+ *  - dt limitado para não "pular" a animação ao voltar para a aba.
+ */
+const useMorphingText = (texts: string[], active: boolean) => {
   const text1Ref = useRef<HTMLSpanElement>(null);
   const text2Ref = useRef<HTMLSpanElement>(null);
+  const state = useRef({ index: 0, morph: 0, cooldown: 0, settled: false });
 
-  const setStyles = useCallback(
-    (fraction: number) => {
-      const [current1, current2] = [text1Ref.current, text2Ref.current];
-      if (!current1 || !current2 || !texts || texts.length === 0) return;
+  const apply = (fraction: number, index: number) => {
+    const a = text1Ref.current;
+    const b = text2Ref.current;
+    if (!a || !b || texts.length === 0) return;
 
-      current2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-      current2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+    b.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    b.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
 
-      const invertedFraction = 1 - fraction;
-      current1.style.filter = `blur(${Math.min(8 / invertedFraction - 8, 100)}px)`;
-      current1.style.opacity = `${Math.pow(invertedFraction, 0.4) * 100}%`;
+    const inverted = 1 - fraction;
+    a.style.filter = `blur(${Math.min(8 / inverted - 8, 100)}px)`;
+    a.style.opacity = `${Math.pow(inverted, 0.4) * 100}%`;
 
-      current1.textContent = texts[textIndexRef.current % texts.length];
-      current2.textContent = texts[(textIndexRef.current + 1) % texts.length];
-    },
-    [texts],
-  );
+    const t1 = texts[index % texts.length];
+    const t2 = texts[(index + 1) % texts.length];
+    if (a.textContent !== t1) a.textContent = t1;
+    if (b.textContent !== t2) b.textContent = t2;
+  };
 
-  const doMorph = useCallback(() => {
-    morphRef.current -= cooldownRef.current;
-    cooldownRef.current = 0;
-
-    let fraction = morphRef.current / morphTime;
-
-    if (fraction > 1) {
-      cooldownRef.current = cooldownTime;
-      fraction = 1;
-    }
-
-    setStyles(fraction);
-
-    if (fraction === 1) {
-      textIndexRef.current++;
-    }
-  }, [setStyles]);
-
-  const doCooldown = useCallback(() => {
-    morphRef.current = 0;
-    const [current1, current2] = [text1Ref.current, text2Ref.current];
-    if (current1 && current2) {
-      current2.style.filter = "none";
-      current2.style.opacity = "100%";
-      current1.style.filter = "none";
-      current1.style.opacity = "0%";
-    }
-  }, []);
+  // Estado inicial estático (mostra a 1ª palavra mesmo antes de entrar na tela)
+  useEffect(() => {
+    apply(0, state.current.index);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [texts]);
 
   useEffect(() => {
-    let animationFrameId: number;
+    if (!active) return;
 
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
+    const s = state.current;
+    let raf = 0;
+    let last = performance.now();
 
-      const newTime = new Date();
-      const dt = (newTime.getTime() - timeRef.current.getTime()) / 1000;
-      timeRef.current = newTime;
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
 
-      cooldownRef.current -= dt;
+      s.cooldown -= dt;
 
-      if (cooldownRef.current <= 0) doMorph();
-      else doCooldown();
+      if (s.cooldown <= 0) {
+        s.settled = false;
+        s.morph += dt;
+        let fraction = s.morph / MORPH_TIME;
+
+        if (fraction > 1) {
+          s.cooldown = COOLDOWN_TIME;
+          fraction = 1;
+        }
+
+        apply(fraction, s.index);
+
+        if (fraction === 1) s.index++;
+      } else if (!s.settled) {
+        // cooldown: palavra nova parada e nítida
+        s.morph = 0;
+        const a = text1Ref.current;
+        const b = text2Ref.current;
+        if (a && b) {
+          b.style.filter = "none";
+          b.style.opacity = "100%";
+          a.style.filter = "none";
+          a.style.opacity = "0%";
+        }
+        s.settled = true;
+      }
     };
 
-    animate();
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [doMorph, doCooldown]);
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, texts]);
 
   return { text1Ref, text2Ref };
 };
@@ -94,8 +100,8 @@ interface MorphingTextProps {
   texts: string[];
 }
 
-const Texts: React.FC<Pick<MorphingTextProps, "texts">> = ({ texts }) => {
-  const { text1Ref, text2Ref } = useMorphingText(texts);
+const Texts: FC<{ texts: string[]; active: boolean }> = ({ texts, active }) => {
+  const { text1Ref, text2Ref } = useMorphingText(texts, active);
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       <span
@@ -110,16 +116,17 @@ const Texts: React.FC<Pick<MorphingTextProps, "texts">> = ({ texts }) => {
   );
 };
 
-const SvgFilters: React.FC = () => (
-  <svg id="filters" style={{ display: 'none' }}>
+const SvgFilters: FC = () => (
+  // width/height 0 em vez de display:none — Safari/Firefox ignoram filtros dentro de display:none
+  <svg aria-hidden="true" focusable="false" style={{ position: "absolute", width: 0, height: 0 }}>
     <defs>
       <filter id="threshold">
         <feColorMatrix
           in="SourceGraphic"
           type="matrix"
-          values="1 0 0 0 0 
-                  0 1 0 0 0 
-                  0 0 1 0 0 
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
                   0 0 0 255 -140"
         />
       </filter>
@@ -127,16 +134,21 @@ const SvgFilters: React.FC = () => (
   </svg>
 );
 
-const MorphingText: React.FC<MorphingTextProps> = ({ texts, className }) => (
-  <div
-    className={cn(
-      "relative h-32 w-full flex items-center justify-center font-avenue leading-none [filter:url(#threshold)_blur(0.6px)] text-[40pt] lg:text-[6rem]",
-      className,
-    )}
-  >
-    <Texts texts={texts} />
-    <SvgFilters />
-  </div>
-);
+const MorphingText: FC<MorphingTextProps> = ({ texts, className }) => {
+  const [ref, inView] = useInView<HTMLDivElement>("50px");
 
-export { MorphingText }; 
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "relative h-32 w-full flex items-center justify-center font-avenue leading-none [filter:url(#threshold)_blur(0.6px)] text-[40pt] lg:text-[6rem]",
+        className,
+      )}
+    >
+      <Texts texts={texts} active={inView} />
+      <SvgFilters />
+    </div>
+  );
+};
+
+export { MorphingText };

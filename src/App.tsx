@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
+import type { ReactNode } from 'react'
 import Hero from './components/Hero'
 import Partners from './components/Partners'
 import Gallery from './components/Gallery'
@@ -19,17 +20,22 @@ const navItems = [
   { label: 'Contato', href: '#contato' },
 ];
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 60, scale: 0.96 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.7,
-      ease: [0.21, 0.47, 0.32, 0.98]
-    }
-  }
+/**
+ * Entrada suave das seções. Só anima opacity + translateY (compositor) e roda uma única vez —
+ * antes era scale + y com `once: false`, o que reanimava seções gigantes a cada scroll.
+ * Não usar em seções com position:sticky interno (Gallery / Stats).
+ */
+function Reveal({ children }: { children: ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
+    >
+      {children}
+    </motion.div>
+  )
 }
 
 function App() {
@@ -37,7 +43,7 @@ function App() {
     <ImagePreloader>
       <main className="min-h-screen bg-white dark:bg-brand-darkBlue text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
         <PillNav
-          logo="favicon.png"
+          logo="/favicon.png"
           logoAlt="Toinho Redes"
           items={navItems}
           baseColor="#0732C1"
@@ -49,20 +55,19 @@ function App() {
         <ScrollProgress />
         <SmoothScroll />
         <Hero />
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} variants={sectionVariants}>
+        <Reveal>
           <Partners />
-        </motion.div>
+        </Reveal>
         {/* Sem wrapper animado: transform no pai quebra position:sticky da galeria mobile */}
         <Gallery />
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} variants={sectionVariants}>
+        <Reveal>
           <Catalogue />
-        </motion.div>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} variants={sectionVariants}>
-          <Stats />
-        </motion.div>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} variants={sectionVariants}>
+        </Reveal>
+        {/* Seção de Autoridade & Estatísticas */}
+        <Stats />
+        <Reveal>
           <FAQ />
-        </motion.div>
+        </Reveal>
         <Footer />
       </main>
     </ImagePreloader>

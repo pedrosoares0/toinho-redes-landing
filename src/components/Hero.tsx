@@ -5,35 +5,21 @@ import { motion } from "motion/react";
 
 const sports = ["FUTEVÔLEI", "BEACH TENNIS", "VÔLEI", "TÊNIS"];
 
-const images = [
-  "https://i.pinimg.com/736x/9f/a1/94/9fa1947f11c34424d8b81b84b2aadb74.jpg",
-  "https://i.pinimg.com/736x/64/05/15/6405159aeea8b8fb7bc48ea7c34fd591.jpg",
-  "https://i.pinimg.com/1200x/46/b0/a1/46b0a1049111344c80d27efe6e9d44a5.jpg",
-  "https://i.pinimg.com/736x/f3/19/84/f31984c93a997420d812bca4bb7e2dd6.jpg",
-  "https://i.pinimg.com/736x/84/ea/eb/84eaeb559c2fcde8ff9c6cf4b704ab08.jpg",
-  "https://i.pinimg.com/736x/72/5c/25/725c25da4d5fa9d9a5a156b797beea27.jpg",
-  "https://i.pinimg.com/1200x/18/19/f7/1819f7efa5cc86dd22ad441af9a11b8f.jpg",
-  "https://i.pinimg.com/736x/47/b4/bd/47b4bd47e3a6360934816a9f2aca012b.jpg",
-  "https://i.pinimg.com/1200x/18/80/11/18801189d45d80532c1e893cc8cbeaf3.jpg",
-];
+// Servidas do próprio site (public/img) — geradas por `npm run optimize:images`
+const images = Array.from({ length: 9 }, (_, i) => `/img/hero-trail-${i + 1}.webp`);
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <motion.div
-        initial={{ scale: 1 }}
-        animate={{ scale: 1.1 }}
-        transition={{
-          duration: 20,
-          ease: "linear",
-          repeat: Infinity,
-          repeatType: "reverse"
-        }}
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500 dark:brightness-[0.45] dark:saturate-[0.8]"
-        style={{ backgroundImage: "url('bgherolight.webp')" }}
+    <section className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden">
+      {/* Background Image — zoom lento via CSS (compositor), imagem real p/ prioridade de LCP */}
+      <img
+        src="/bgherolight.webp"
+        alt=""
+        aria-hidden="true"
+        fetchPriority="high"
+        decoding="async"
+        className="hero-kenburns absolute inset-0 z-0 h-full w-full object-cover object-center dark:brightness-[0.45] dark:saturate-[0.8]"
       />
-
 
       <ImageCursorTrail
         items={images}
@@ -80,5 +66,3 @@ export default function Hero() {
     </section>
   );
 }
-
-

@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'motion/react';
 
 interface TextRevealProps {
   text: string;
@@ -18,7 +18,7 @@ export const TextReveal: React.FC<TextRevealProps> = ({
 }) => {
   const words = text.split(" ");
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -29,7 +29,7 @@ export const TextReveal: React.FC<TextRevealProps> = ({
     },
   };
 
-  const child = {
+  const child: Variants = {
     visible: {
       opacity: 1,
       y: 0,
