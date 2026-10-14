@@ -59,7 +59,16 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
   rotationRange = [15, 0, -10],
   className = "",
 }: ScaleCarouselProps<ItemT>) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Inicializa já com o modelo "Orelha" aberto
+  const initialOrelhaIndex = data.findIndex(
+    (item) =>
+      item.id.toLowerCase().includes("orelha") ||
+      item.name.toLowerCase().includes("orelha")
+  );
+
+  const [currentIndex, setCurrentIndex] = useState(
+    initialOrelhaIndex !== -1 ? initialOrelhaIndex : 0
+  );
   const [containerWidth, setContainerWidth] = useState(1200);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -296,15 +305,15 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
                   {item.name}
                 </h3>
 
-                {/* Botão Oficial Fazer Orçamento WhatsApp */}
+                {/* Botão Oficial Fazer Orçamento (Sem verde: Branco luxuoso com tipografia azul royal) */}
                 <div className="pointer-events-auto">
                   <a
                     href={item.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-green-500 via-emerald-600 to-green-500 text-white font-sans font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_10px_25px_-5px_rgba(34,197,94,0.6)] hover:shadow-[0_14px_30px_-4px_rgba(34,197,94,0.8)] hover:scale-105 active:scale-95 transition-all duration-300 border border-green-300/40"
+                    className="inline-flex items-center gap-2.5 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-white hover:bg-brand-lightBlue text-brand-blue hover:text-brand-darkBlue font-sans font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_12px_28px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_32px_rgba(128,194,253,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/60"
                   >
-                    <FaWhatsapp className="text-base sm:text-lg text-white shrink-0" />
+                    <FaWhatsapp className="text-base sm:text-lg text-brand-blue shrink-0" />
                     <span>Fazer Orçamento</span>
                   </a>
                 </div>
