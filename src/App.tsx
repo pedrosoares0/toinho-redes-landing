@@ -9,7 +9,6 @@ import FAQ from './components/FAQ'
 import Footer from './components/Footer'
 import TextLoop from './components/TextLoop'
 import SmoothScroll from './components/ui/smooth-scroll'
-import ImagePreloader from './components/ui/image-preloader'
 import { ScrollProgress } from './components/ui/scroll-progress'
 import PillNav from './components/ui/PillNav'
 
@@ -41,8 +40,7 @@ function Reveal({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <ImagePreloader>
-      <main className="min-h-screen bg-white dark:bg-brand-darkBlue text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
+    <main className="min-h-screen bg-white dark:bg-brand-darkBlue text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
         <PillNav
           logo="/favicon.png"
           logoAlt="Toinho Redes"
@@ -93,7 +91,6 @@ function App() {
         </Reveal>
         <Footer />
       </main>
-    </ImagePreloader>
   )
 }
 

@@ -20,11 +20,6 @@ export const galleryItems: CarouselItemData[] = [
     image: "/foto (5).webp",
   },
   {
-    title: "Praiana",
-    location: "Salvador, BA",
-    image: "/img/gallery-praiana.webp",
-  },
-  {
     title: "Mali",
     location: "Salvador, BA",
     image: "/img/gallery-mali.webp",
@@ -50,7 +45,12 @@ export default function MaterialCarousel({
   items = galleryItems,
   className = "",
 }: MaterialCarouselProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const maliIndex = items.findIndex((item) =>
+    item.title.toLowerCase().includes("mali")
+  );
+  const [activeIndex, setActiveIndex] = useState(
+    maliIndex !== -1 ? maliIndex : 0
+  );
   const [containerWidth, setContainerWidth] = useState(1200);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
