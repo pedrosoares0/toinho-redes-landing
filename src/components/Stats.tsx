@@ -1,6 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { useInView } from '@/lib/hooks';
+
+const STATS_MEDIA = {
+  gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzEyMWY1MzQ0YzQ1YWU1MTU3MTg4NTU3ZDk0ZWI2ZTM1ZDRhYmM1MSZjdD1n/Z3Ii3Jo58bRC0qnCW4/giphy.gif',
+  localGif: '/img/stats-action.gif',
+  fallback: '/img/stats-desktop.webp',
+};
 
 /**
  * Contador numérico com interpolação de física suave.
@@ -33,6 +39,14 @@ function CountUp({ end, duration = 2, start }: { end: number; duration?: number;
 
 export default function Stats() {
   const [sectionRef, inView] = useInView<HTMLElement>('100px');
+  const [mediaSrc, setMediaSrc] = useState(STATS_MEDIA.gif);
+
+  const handleMediaError = () => {
+    setMediaSrc((prev) => {
+      if (prev === STATS_MEDIA.gif) return STATS_MEDIA.localGif;
+      return STATS_MEDIA.fallback;
+    });
+  };
 
   return (
     <section
@@ -76,9 +90,9 @@ export default function Stats() {
           </motion.p>
         </div>
 
-        {/* Grid de Alta Performance: Foto de Ação + 3 Métricas */}
+        {/* Grid de Alta Performance: GIF de Ação + 3 Métricas */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* Lado Esquerdo: Foto Oficial */}
+          {/* Lado Esquerdo: GIF com fallback */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -87,10 +101,11 @@ export default function Stats() {
             className="lg:col-span-6 relative min-h-[320px] sm:min-h-[380px] lg:min-h-[440px] w-full overflow-hidden rounded-3xl border border-brand-blue/10 dark:border-white/10 shadow-lg bg-slate-900 group"
           >
             <img
-              src="/img/stats-desktop.webp"
+              src={mediaSrc}
               alt="Partida oficial com rede Toinho Redes"
               loading="lazy"
               decoding="async"
+              onError={handleMediaError}
               className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
