@@ -103,3 +103,19 @@ footer[id] {
     offset-distance: 100%;
   }
 }
+
+/* Oculta qualquer badge, drawer de deploy preview ou widget injetado pelo Netlify */
+#netlify-badge,
+.netlify-badge,
+[data-netlify-drawer],
+#netlify-drawer,
+iframe[src*="netlify"],
+iframe[id*="netlify"],
+div[class*="netlify-drawer"],
+netlifydrawer-app,
+div[style*="z-index"]:has(a[href*="netlify.com"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

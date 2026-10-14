@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NETLIFY_DRAWER = "false"
 
 # SPA fallback (só é aplicado quando nenhum arquivo estático existe)
 [[redirects]]
