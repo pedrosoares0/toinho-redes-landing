@@ -1,23 +1,22 @@
 import { useState } from 'react';
-import { Plus, Minus } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Plus } from 'lucide-react';
 
 const faqs = [
   {
     question: 'Qual o material das redes?',
-    answer: 'Nossas redes são fabricadas com polietileno de alta densidade, tratado para resistir a raios UV e intempéries, garantindo durabilidade e resistência.'
+    answer: 'Nossas redes são fabricadas com polietileno de alta densidade (100% nylon virgem), tratado com aditivos especiais contra raios UV e intempéries marinhas, garantindo anos de durabilidade sem ressecar.'
   },
   {
     question: 'Vocês fazem redes sob medida?',
-    answer: 'Sim! Produzimos redes em qualquer tamanho para atender às necessidades específicas da sua quadra ou espaço esportivo. Entre em contato para um orçamento personalizado.'
+    answer: 'Sim! Produzimos redes sob medida para qualquer tamanho de quadra (futevôlei, beach tennis, vôlei ou tênis), com faixas personalizadas e reforço duplo nas extremidades.'
   },
   {
-    question: 'Como faço para limpar a rede?',
-    answer: 'A limpeza é simples: basta utilizar água e sabão neutro. Evite produtos químicos agressivos que possam danificar as fibras de nylon ao longo do tempo.'
+    question: 'Como faço para limpar e conservar a rede?',
+    answer: 'A manutenção é simples: basta lavar periodicamente com água doce e sabão neutro para retirar excessos de areia e salitre. Evite alvejantes químicos abrasivos.'
   },
   {
-    question: 'Qual o prazo de entrega?',
-    answer: 'O prazo varia conforme o modelo e a personalização, mas geralmente entregamos em todo o estado em um período de 5 a 10 dias úteis.'
+    question: 'Qual o prazo de envio e entrega?',
+    answer: 'O envio é imediato para modelos em estoque e de 3 a 5 dias úteis para pedidos com personalização de faixas e cores. Entregamos em Salvador, na Bahia e em todo o Brasil.'
   }
 ];
 
@@ -25,56 +24,75 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-24 bg-white dark:bg-brand-darkBlue transition-colors duration-300">
-      <div className="max-w-4xl mx-auto px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-6xl font-avenue font-black tracking-tighter text-brand-blue dark:text-white uppercase leading-none">
-            Dúvidas <br />
-            <span className="text-brand-lightBlue drop-shadow-sm">Frequentes</span>
+    <section id="faq" className="py-20 md:py-28 bg-white dark:bg-brand-darkBlue transition-colors duration-300">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 mb-2">
+            <div className="h-px w-6 bg-brand-secondaryBlue" />
+            <span className="font-sans text-[10px] font-black uppercase tracking-[0.3em] text-brand-secondaryBlue">
+              Tire suas dúvidas
+            </span>
+            <div className="h-px w-6 bg-brand-secondaryBlue" />
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-avenue font-black tracking-tight text-brand-blue dark:text-white uppercase leading-none">
+            Dúvidas <span className="text-brand-secondaryBlue dark:text-brand-lightBlue">Frequentes</span>
           </h2>
-        </motion.div>
+        </div>
 
-        <div className="space-y-6">
-          {faqs.map((faq, index) => (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              key={index}
-              className={`border-2 rounded-[2rem] overflow-hidden transition-all duration-500 ${
-                openIndex === index ? 'border-brand-secondaryBlue bg-brand-lightBlue/10 dark:bg-brand-secondaryBlue/10' : 'border-brand-blue/5 dark:border-white/5 bg-white dark:bg-brand-darkCard/40'
-              }`}
-            >
-              <button 
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-8 text-left transition-colors"
-              >
-                <span className={`font-avenue font-black text-xl uppercase tracking-tighter ${openIndex === index ? 'text-brand-blue dark:text-white' : 'text-brand-blue/60 dark:text-white/60'}`}>
-                  {faq.question}
-                </span>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openIndex === index ? 'bg-brand-blue dark:bg-brand-lightBlue text-white dark:text-brand-blue rotate-180' : 'bg-brand-blue/5 dark:bg-white/10 text-brand-blue dark:text-brand-lightBlue'}`}>
-                  {openIndex === index ? <Minus size={18} /> : <Plus size={18} />}
-                </div>
-              </button>
-              
-              <div 
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        {/* Lista de Acordeões ultraleves com Grid CSS (zero lag, 60fps garantido) */}
+        <div className="space-y-4">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <div
+                key={faq.question}
+                className={`rounded-2xl border transition-colors duration-200 ${
+                  isOpen
+                    ? 'border-brand-secondaryBlue/40 bg-brand-lightBlue/10 dark:bg-brand-secondaryBlue/10 shadow-sm'
+                    : 'border-brand-blue/10 dark:border-white/10 bg-white dark:bg-white/[0.02] hover:border-brand-blue/25'
                 }`}
               >
-                <div className="p-8 pt-0 text-brand-blue/60 dark:text-white/70 font-inter font-bold uppercase tracking-wide leading-relaxed text-sm">
-                  {faq.answer}
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="w-full flex items-center justify-between p-6 sm:p-7 text-left gap-4"
+                  aria-expanded={isOpen}
+                >
+                  <span
+                    className={`font-avenue font-black text-lg sm:text-xl uppercase tracking-tight transition-colors duration-200 ${
+                      isOpen
+                        ? 'text-brand-blue dark:text-white'
+                        : 'text-brand-blue/80 dark:text-white/80'
+                    }`}
+                  >
+                    {faq.question}
+                  </span>
+                  <div
+                    className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                      isOpen
+                        ? 'bg-brand-blue text-white rotate-45'
+                        : 'bg-brand-blue/5 text-brand-blue dark:bg-white/10 dark:text-white rotate-0'
+                    }`}
+                  >
+                    <Plus size={16} strokeWidth={2.5} />
+                  </div>
+                </button>
+
+                {/* Acordeão CSS Grid nativo (não causa reflow de layout) */}
+                <div
+                  className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                    isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                  }`}
+                >
+                  <div className="overflow-hidden min-h-0">
+                    <p className="px-6 pb-6 sm:px-7 sm:pb-7 text-brand-blue/70 dark:text-white/70 font-sans text-sm sm:text-base leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -86,9 +86,7 @@ function App() {
         </Reveal>
         {/* Seção de Autoridade & Estatísticas */}
         <Stats />
-        <Reveal>
-          <FAQ />
-        </Reveal>
+        <FAQ />
         <Footer />
       </main>
   )

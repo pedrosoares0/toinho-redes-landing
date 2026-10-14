@@ -6,7 +6,7 @@ export default function Footer() {
     >
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
         {/* Grid com 3 colunas e linha divisória fina no topo de cada uma (MENU, REDES SOCIAIS, ATENDIMENTO) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-16 pb-10 md:pb-14">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-16 pb-8 md:pb-12">
           {/* Coluna 1: MENU */}
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-brand-blue/20 mb-5">
@@ -101,9 +101,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Tipografia Monumental Edge-to-Edge ("TOINHO REDES") em AZUL garantido e 100% visível */}
-      <div className="w-full overflow-hidden flex justify-center items-end select-none pointer-events-none pt-4 sm:pt-6 md:pt-8 pb-0">
-        <h2 className="text-[13vw] sm:text-[14.5vw] md:text-[16vw] lg:text-[17vw] font-avenue font-black uppercase tracking-[-0.035em] leading-[0.76] text-center whitespace-nowrap bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#80C2FD]/20 bg-clip-text text-transparent">
+      {/* Tipografia Monumental: Tamanho calibrado para não cortar nas laterais e degradê de branco para azul de cima para baixo */}
+      <div className="w-full overflow-hidden flex justify-center items-end select-none pointer-events-none px-4 sm:px-6 pt-2 pb-0">
+        <h2 className="text-[9.5vw] sm:text-[10.5vw] md:text-[11.8vw] lg:text-[12.6vw] font-avenue font-black uppercase tracking-[-0.03em] leading-[0.8] text-center whitespace-nowrap bg-gradient-to-b from-white via-[#80C2FD] to-[#0732C1] bg-clip-text text-transparent">
           TOINHO REDES
         </h2>
       </div>
