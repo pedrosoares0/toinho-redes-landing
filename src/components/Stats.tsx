@@ -91,14 +91,14 @@ export default function Stats() {
         </div>
 
         {/* Grid de Alta Performance: GIF de Ação + 3 Métricas */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* Lado Esquerdo: GIF com fallback */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          {/* Lado Esquerdo: GIF com fallback e altura rigorosamente controlada */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="lg:col-span-6 relative min-h-[320px] sm:min-h-[380px] lg:min-h-[440px] w-full overflow-hidden rounded-3xl border border-brand-blue/10 dark:border-white/10 shadow-lg bg-slate-900 group"
+            className="lg:col-span-6 relative h-[320px] sm:h-[380px] lg:h-[430px] w-full overflow-hidden rounded-3xl border border-brand-blue/10 dark:border-white/10 shadow-lg bg-slate-900 group"
           >
             <img
               src={mediaSrc}
@@ -106,7 +106,7 @@ export default function Stats() {
               loading="lazy"
               decoding="async"
               onError={handleMediaError}
-              className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
             {/* Gradiente sutil para legibilidade da legenda */}
@@ -123,8 +123,8 @@ export default function Stats() {
             </div>
           </motion.div>
 
-          {/* Lado Direito: Os 3 Cards de Métricas */}
-          <div className="lg:col-span-6 flex flex-col justify-between gap-3 sm:gap-4">
+          {/* Lado Direito: Os 3 Cards de Métricas compactos e sem vazios */}
+          <div className="lg:col-span-6 flex flex-col justify-center gap-3 sm:gap-3.5">
             {/* Métrica 1: 930 Quadras */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
