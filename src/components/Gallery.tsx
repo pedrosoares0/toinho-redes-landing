@@ -1,93 +1,49 @@
-import ImageGallery, { MobileStickyStackGallery, galleryImages } from "./ui/image-gallery";
+import MaterialCarousel from "./ui/MaterialCarousel";
 import { motion } from "motion/react";
 import TextReveal from "./ui/text-reveal";
 
 export default function Gallery() {
   return (
-    <section id="portfolio" className="relative bg-white dark:bg-brand-darkBlue py-16 md:py-32 transition-colors duration-300">
+    <section id="portfolio" className="relative bg-white dark:bg-brand-darkBlue py-16 md:py-28 transition-colors duration-300 overflow-hidden">
       {/* Cabeçalho */}
-      <div className="relative mx-auto max-w-[1400px] px-6">
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 mb-8 md:mb-12">
         <div className="pointer-events-none absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-brand-blue/[0.02] dark:from-white/[0.01] to-transparent" />
 
-        <div className="relative mb-10 flex flex-col md:mb-16">
+        <div className="relative flex flex-col">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="mb-6 flex items-center gap-4"
+            className="mb-4 flex items-center gap-3"
           >
-            <div className="h-px w-12 bg-brand-blue/30" />
-            <span className="font-sans text-[10px] font-black uppercase tracking-[0.5em] text-brand-blue/60 dark:text-white/60">
+            <div className="h-px w-10 bg-brand-blue/30 dark:bg-brand-lightBlue/40" />
+            <span className="font-sans text-[10px] font-black uppercase tracking-[0.45em] text-brand-blue/70 dark:text-brand-lightBlue">
               Showcase
             </span>
           </motion.div>
 
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="max-w-4xl"
             >
-              <h2 className="mb-6 font-avenue text-5xl font-black uppercase leading-[0.8] tracking-tighter text-brand-blue dark:text-white md:text-8xl flex flex-wrap gap-x-2 md:gap-x-4">
+              <h2 className="mb-3 font-avenue text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase leading-[0.85] tracking-tighter text-brand-blue dark:text-white flex flex-wrap gap-x-2 md:gap-x-4">
                 <TextReveal text="Em" className="text-brand-blue dark:text-white" />
                 <TextReveal text="Quadra" className="text-brand-lightBlue drop-shadow-sm" />
               </h2>
-              <p className="max-w-xl font-sans text-[10px] font-bold uppercase leading-relaxed tracking-[0.3em] text-brand-blue/50 dark:text-white/50 md:text-xs">
+              <p className="max-w-xl font-sans text-xs sm:text-sm font-medium uppercase leading-relaxed tracking-[0.2em] text-brand-blue/60 dark:text-white/60">
                 Performance & design presentes nas principais arenas do Brasil.
               </p>
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center gap-3 md:hidden rounded-2xl border border-brand-blue/10 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.03] backdrop-blur-md px-4 py-2.5 shadow-sm"
-            >
-              <div className="flex flex-col">
-                <span className="font-avenue text-2xl font-black text-brand-blue dark:text-white">+900</span>
-                <span className="font-sans text-[8px] font-black uppercase tracking-widest text-brand-blue/50 dark:text-white/50">
-                  Instalações
-                </span>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-blue/10 dark:border-white/10 bg-white/50 dark:bg-white/5">
-                <img src="/favicon.png" alt="Logo" loading="lazy" className="h-5 w-5 object-contain" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="hidden items-center gap-5 md:flex rounded-2xl border border-brand-blue/10 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.03] backdrop-blur-md px-5 py-3 shadow-sm"
-            >
-              <div className="flex flex-col items-end">
-                <span className="font-avenue text-3xl font-black text-brand-blue dark:text-white leading-none">+900</span>
-                <span className="font-sans text-[9px] font-black uppercase tracking-widest text-brand-blue/50 dark:text-white/50 mt-1">
-                  Instalações Homologadas
-                </span>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-blue/10 dark:border-white/10 bg-white/50 dark:bg-white/5 shadow-inner">
-                <img src="/favicon.png" alt="Logo" loading="lazy" className="h-6 w-6 object-contain" />
-              </div>
-            </motion.div>
           </div>
-        </div>
-
-        {/* Desktop: galeria accordion dentro do container */}
-        <div className="hidden md:block">
-          <ImageGallery />
-          <p className="mt-4 text-right font-sans text-[9px] font-black uppercase tracking-[0.35em] text-brand-blue/40 dark:text-white/40">
-            Navegue pelos cards para ver cada arena
-          </p>
         </div>
       </div>
 
-      {/* Mobile: stack sticky em largura total — fora de padding/overflow */}
-      <MobileStickyStackGallery items={galleryImages} />
+      {/* Material 3 Multi-Browse Carousel (Mobile + Desktop unificado) */}
+      <MaterialCarousel />
     </section>
   );
 }
