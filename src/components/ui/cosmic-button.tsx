@@ -7,8 +7,10 @@ export type CosmicButtonProps<E extends "a" | "button" = "a"> = {
 } & ComponentPropsWithoutRef<E>;
 
 /**
- * An animated button/link with a cosmic gradient border effect from Cult UI.
- * Renders as an anchor by default; use `as="button"` for button behavior.
+ * Botão cósmico animado estilizado com a identidade visual da Toinho Redes:
+ * - Gradiente animado em tons de azul (#0732C1, #1371F9, #80C2FD, #38bdf8)
+ * - Fundo interno branco sólido
+ * - Letra em azul escuro (#0732C1) em alta definição
  */
 export function CosmicButton<E extends "a" | "button" = "a">({
   as,
@@ -21,25 +23,25 @@ export function CosmicButton<E extends "a" | "button" = "a">({
 
   const baseClassName = cn(
     "group/cosmic relative inline-flex min-h-11 min-w-11 items-center justify-center gap-3 rounded-[15px] p-[3px] transition-transform",
-    "focus-visible:ring-2 focus-visible:ring-[#adfa1b] focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-[#0c0912]",
+    "focus-visible:ring-2 focus-visible:ring-brand-secondaryBlue focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none",
     className
   );
 
   const content = (
     <>
-      {/* Animated cosmic border - enlarges on hover */}
+      {/* Borda cósmica animada em gradiente azul Toinho Redes - expande no hover */}
       <span className="absolute inset-0 overflow-hidden rounded-[15px] transition-all duration-300 ease-out group-hover/cosmic:inset-[-3px] group-hover/cosmic:rounded-[15px]">
-        <span className="animate-cosmic-spin absolute inset-[-200%] bg-[conic-gradient(from_0deg,#adfa1b,#c9ff63,#efffb7,#8cd413,#6f9f19,#92d61b,#adfa1b)] opacity-95" />
+        <span className="animate-cosmic-spin absolute inset-[-200%] bg-[conic-gradient(from_0deg,#0732C1,#1371F9,#80C2FD,#38bdf8,#1371F9,#0732C1)] opacity-95" />
       </span>
 
-      {/* Noise/texture overlay on the border - enlarges on hover */}
-      <span className="absolute inset-0 overflow-hidden rounded-[15px] opacity-45 mix-blend-soft-light transition-all duration-300 ease-out group-hover/cosmic:inset-[-3px] group-hover/cosmic:rounded-[15px] dark:opacity-60 dark:mix-blend-overlay">
-        <span className="animate-cosmic-spin-slow absolute inset-[-200%] bg-[conic-gradient(from_180deg,#efffb7_0%,transparent_30%,#adfa1b_50%,transparent_70%,#7fbf17_100%)]" />
+      {/* Camada de brilho e reflexo azul sobreposto */}
+      <span className="absolute inset-0 overflow-hidden rounded-[15px] opacity-60 mix-blend-soft-light transition-all duration-300 ease-out group-hover/cosmic:inset-[-3px] group-hover/cosmic:rounded-[15px]">
+        <span className="animate-cosmic-spin-slow absolute inset-[-200%] bg-[conic-gradient(from_180deg,#80C2FD_0%,transparent_30%,#1371F9_50%,transparent_70%,#0732C1_100%)]" />
       </span>
 
-      {/* Theme-aware inner background */}
-      <span className="bg-[#050814] relative z-10 flex items-center gap-2.5 rounded-[12px] px-6 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),inset_0_-1px_0_rgba(15,23,42,0.08),0_1px_1px_rgba(15,23,42,0.08),0_8px_24px_rgba(15,23,42,0.14)] transition-all duration-300 group-hover/cosmic:shadow-[inset_0_1px_0_rgba(255,255,255,0.82),inset_0_-1px_0_rgba(15,23,42,0.12),0_2px_6px_rgba(15,23,42,0.14),0_12px_34px_rgba(15,23,42,0.2)] active:scale-[0.98] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(0,0,0,0.5),0_1px_1px_rgba(0,0,0,0.45),0_10px_28px_rgba(0,0,0,0.35)] dark:group-hover/cosmic:shadow-[inset_0_1px_0_rgba(255,255,255,0.16),inset_0_-1px_0_rgba(0,0,0,0.6),0_2px_6px_rgba(0,0,0,0.55),0_14px_34px_rgba(0,0,0,0.42)]">
-        <span className="text-white text-xs sm:text-sm font-black uppercase tracking-[0.22em]">
+      {/* Fundo interno branco com tipografia em azul escuro e sombra sutil */}
+      <span className="bg-white relative z-10 flex items-center gap-2.5 rounded-[12px] px-6 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_2px_8px_rgba(7,50,193,0.18)] transition-all duration-300 group-hover/cosmic:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_4px_16px_rgba(7,50,193,0.3)] active:scale-[0.98]">
+        <span className="text-brand-blue font-avenue font-black text-xs sm:text-sm uppercase tracking-[0.22em]">
           {children ?? "ORÇAMENTO"}
         </span>
       </span>
