@@ -81,10 +81,8 @@ function App() {
             pauseOnHover={false}
           />
         </div>
-
-        <Reveal>
-          <Catalogue />
-        </Reveal>
+        {/* Catálogo de Modelos (sem wrapper transform para garantir 60fps no carrossel) */}
+        <Catalogue />
         {/* Seção de Autoridade & Estatísticas */}
         <Stats />
         {/* Galeria em colunas inclinadas com borda ondulada */}

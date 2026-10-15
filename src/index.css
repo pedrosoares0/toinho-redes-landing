@@ -168,6 +168,7 @@ footer[id] {
     var(--wave-top) top left / var(--wave-w) var(--wave-h) repeat-x,
     var(--wave-bottom) bottom left / var(--wave-w) var(--wave-h) repeat-x,
     linear-gradient(#000 0 0) center / 100% calc(100% - 2 * var(--wave-h) + 2px) no-repeat;
+  transform: translateZ(0);
 }
 
 /* ---------- Fundo da página: grid bem discreto e sutil ---------- */

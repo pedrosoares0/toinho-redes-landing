@@ -189,8 +189,25 @@ const TextLoop = ({
       root.addEventListener('pointerleave', resume);
     }
 
+    // Economia de CPU/GPU: pausa quando fora da tela
+    let observer: IntersectionObserver | null = null;
+    if (root && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            resume();
+          } else {
+            pause();
+          }
+        },
+        { rootMargin: '150px' }
+      );
+      observer.observe(root);
+    }
+
     return () => {
       tween.kill();
+      observer?.disconnect();
       if (pauseOnHover && root) {
         root.removeEventListener('pointerenter', pause);
         root.removeEventListener('pointerleave', resume);

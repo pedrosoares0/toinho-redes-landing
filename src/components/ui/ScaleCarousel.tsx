@@ -270,9 +270,9 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
                   : "opacity 400ms ease, transform 600ms cubic-bezier(0.16, 1, 0.3, 1)",
               }}
               className={cn(
-                "relative shrink-0 overflow-hidden rounded-3xl bg-slate-950 border border-white/10 shadow-2xl select-none",
+                "relative shrink-0 overflow-hidden rounded-3xl bg-slate-950 border border-white/10 shadow-xl select-none",
                 isFocal
-                  ? "opacity-100 ring-1 ring-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-20"
+                  ? "opacity-100 ring-1 ring-white/20 shadow-[0_16px_36px_rgba(0,0,0,0.45)] z-20"
                   : "opacity-45 hover:opacity-75 scale-[0.93] cursor-pointer z-10"
               )}
             >
