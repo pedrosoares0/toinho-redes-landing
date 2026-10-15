@@ -103,7 +103,7 @@ export default function Footer() {
 
       {/* Tipografia Monumental no limite horizontal da tela, sangrando suavemente nas bordas */}
       <div className="w-full overflow-hidden flex justify-center items-end select-none pointer-events-none pt-2 pb-0">
-        <h2 className="text-[14.5vw] sm:text-[16vw] md:text-[17.5vw] lg:text-[19vw] font-avenue font-black uppercase tracking-[-0.04em] leading-[0.76] text-center whitespace-nowrap bg-gradient-to-b from-white via-[#80C2FD] to-[#0732C1] bg-clip-text text-transparent">
+        <h2 className="text-[10vw] sm:text-[11.2vw] md:text-[12vw] lg:text-[12.8vw] font-avenue font-black uppercase tracking-[-0.04em] leading-[0.76] text-center whitespace-nowrap bg-gradient-to-b from-white via-[#80C2FD] to-[#0732C1] bg-clip-text text-transparent">
           TOINHO REDES
         </h2>
       </div>

@@ -121,7 +121,7 @@ export default function Stats() {
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className="relative rounded-[2.5rem] bg-white border border-brand-blue/10 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-[0_10px_30px_rgba(7,50,193,0.06)] hover:shadow-[0_20px_40px_rgba(7,50,193,0.12)] transition-all duration-500 hover:-translate-y-1.5 group min-h-[350px]"
+              className="relative rounded-[2.5rem] bg-white border border-brand-blue/10 p-6 sm:p-7 xl:p-8 flex flex-col justify-between overflow-hidden shadow-[0_10px_30px_rgba(7,50,193,0.06)] hover:shadow-[0_20px_40px_rgba(7,50,193,0.12)] transition-all duration-500 hover:-translate-y-1.5 group min-h-[360px] sm:min-h-[380px]"
             >
               {/* Linhas curvas wireframe decorativas em tom azul suave */}
               <svg
@@ -158,9 +158,9 @@ export default function Stats() {
                 </p>
               </div>
 
-              {/* Número Gigante na base com contagem rápida em azul escuro perfeitamente alinhado */}
-              <div className="relative z-10 mt-8 pt-4 flex items-baseline">
-                <div className="font-avenue font-black text-6xl sm:text-7xl lg:text-8xl tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent drop-shadow-sm whitespace-nowrap">
+              {/* Número Gigante na base com contagem rápida em azul escuro perfeitamente centralizado */}
+              <div className="relative z-10 mt-8 pt-2 w-full flex items-baseline justify-center text-center">
+                <div className="font-avenue font-black text-7xl sm:text-8xl lg:text-[5.25rem] xl:text-[6.5rem] 2xl:text-[7.5rem] tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent drop-shadow-sm whitespace-nowrap text-center">
                   <CountUp end={stat.value} start={isInView} prefix={stat.prefix} suffix={stat.suffix} />
                 </div>
               </div>
