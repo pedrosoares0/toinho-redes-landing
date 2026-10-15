@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, type MotionValue } from 'motion/react';
 
-/** Imagens de teste (9 únicas) — nova ordem embaralhada. */
+/** Imagens de teste (9 únicas) — ordem dinâmica. */
 const IMAGES = [
   'https://i.pinimg.com/736x/84/ea/eb/84eaeb559c2fcde8ff9c6cf4b704ab08.jpg',
   'https://i.pinimg.com/1200x/66/ba/69/66ba699e00a8bddaf1f8ccb83169f055.jpg',
@@ -19,11 +19,12 @@ type Column = { images: { src: string; ratio: string }[]; travel: number; revers
 function buildColumns(sizes: number[], travels: number[]): Column[] {
   let cursor = 0;
   return sizes.map((count, c) => {
-    // Proporções equilibradas (quadradas e 4:3) para a segunda fileira aparecer inteira
+    // Proporções calibradas: aspect-[4/5] para 2 imagens e aspect-[4/3] para 3 imagens
+    // garantem que todas as colunas tenham ~950px de altura total, cobrindo 100% da seção
     const ratios =
       count <= 2
-        ? ['aspect-square', 'aspect-[4/3]']
-        : ['aspect-[4/3]', 'aspect-square', 'aspect-[4/3]'];
+        ? ['aspect-[4/5]', 'aspect-[4/5]']
+        : ['aspect-[4/3]', 'aspect-[4/3]', 'aspect-[4/3]'];
     const images = Array.from({ length: count }, (_, i) => ({
       src: IMAGES[cursor++],
       ratio: ratios[i % ratios.length],
@@ -33,9 +34,9 @@ function buildColumns(sizes: number[], travels: number[]): Column[] {
 }
 
 const LAYOUT_CONFIGS = {
-  2: { className: 'grid-cols-2', columns: buildColumns([5, 4], [18, 22]) },
-  3: { className: 'grid-cols-3', columns: buildColumns([3, 3, 3], [22, 18, 20]) },
-  4: { className: 'grid-cols-4', columns: buildColumns([3, 2, 2, 2], [24, 20, 22, 18]) },
+  2: { className: 'grid-cols-2', columns: buildColumns([5, 4], [8, 10]) },
+  3: { className: 'grid-cols-3', columns: buildColumns([3, 3, 3], [8, 7, 8]) },
+  4: { className: 'grid-cols-4', columns: buildColumns([3, 2, 2, 2], [8, 7, 8, 7]) },
 };
 
 function useLayoutCols(): 2 | 3 | 4 {
@@ -59,12 +60,11 @@ function useLayoutCols(): 2 | 3 | 4 {
 }
 
 function GalleryColumn({ column, progress }: { column: Column; progress: MotionValue<number> }) {
-  // Sincronizado 1:1 com o scroll suave do Lenis, sem lag ou interpolação dupla
-  const y = useTransform(
-    progress,
-    [0, 1],
-    column.reverse ? [`-${column.travel}%`, '0%'] : ['0%', `-${column.travel}%`]
-  );
+  // Deslocamento seguro com buffer fixo para garantir que nenhuma fresta azul apareça no topo ou na base
+  const startY = column.reverse ? `-${column.travel + 3}%` : `-3%`;
+  const endY = column.reverse ? `-3%` : `-${column.travel + 3}%`;
+
+  const y = useTransform(progress, [0, 1], [startY, endY]);
 
   return (
     <div className="relative overflow-hidden w-full">
@@ -103,10 +103,10 @@ export default function WaveGallery() {
       ref={sectionRef}
       id="galeria"
       aria-label="Galeria de quadras com redes Toinho"
-      className="wave-mask relative w-full h-[85vh] min-h-[580px] md:h-[100vh] md:min-h-[750px] md:max-h-[1050px] overflow-hidden bg-brand-blue"
+      className="wave-mask relative w-full h-[72vh] min-h-[500px] md:h-[80vh] md:min-h-[580px] md:max-h-[720px] overflow-hidden bg-brand-blue"
     >
-      {/* Grid único ativo renderizado no DOM (elimina nós duplicados e acelera GPU) */}
-      <div className={`absolute -inset-x-[10%] -inset-y-[12%] rotate-[-4deg] grid ${layout.className}`}>
+      {/* Grid inclinado cobrindo toda a extensão com margem de segurança */}
+      <div className={`absolute -inset-x-[10%] -inset-y-[10%] rotate-[-3.5deg] grid ${layout.className}`}>
         {layout.columns.map((column, c) => (
           <GalleryColumn key={`${cols}-${c}`} column={column} progress={scrollYProgress} />
         ))}
