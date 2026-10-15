@@ -1,60 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { useInView } from 'motion/react';
-
-/**
- * Contador numérico dinâmico rápido que passa por apenas 3 a 4 números
- * antes de fixar no valor final, proporcionando animação ágil e impactante.
- */
-function CountUp({
-  end,
-  start,
-  prefix = "",
-  suffix = "",
-}: {
-  end: number;
-  start: boolean;
-  prefix?: string;
-  suffix?: string;
-}) {
-  const [count, setCount] = useState(0);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    if (!start || hasAnimated.current) return;
-    hasAnimated.current = true;
-
-    // Passa por apenas 3 a 4 números intermediários (curto e dinâmico)
-    const steps = [
-      Math.round(end * 0.22),
-      Math.round(end * 0.58),
-      Math.round(end * 0.86),
-      end,
-    ];
-
-    let stepIndex = 0;
-    const interval = setInterval(() => {
-      setCount(steps[stepIndex]);
-      stepIndex++;
-      if (stepIndex >= steps.length) {
-        clearInterval(interval);
-      }
-    }, 120);
-
-    return () => clearInterval(interval);
-  }, [start, end]);
-
-  return (
-    <span>
-      {prefix}
-      {count.toLocaleString('pt-BR')}
-      {suffix}
-    </span>
-  );
-}
+import { useRef } from 'react';
 
 export default function Stats() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
   const stats = [
     {
@@ -161,7 +108,11 @@ export default function Stats() {
               {/* Número Gigante na base com contagem rápida em azul escuro perfeitamente centralizado */}
               <div className="relative z-10 mt-8 pt-2 w-full flex items-baseline justify-center text-center">
                 <div className="font-avenue font-black text-7xl sm:text-8xl lg:text-[5.25rem] xl:text-[6.5rem] 2xl:text-[7.5rem] tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent stat-number-3d whitespace-nowrap text-center">
-                  <CountUp end={stat.value} start={isInView} prefix={stat.prefix} suffix={stat.suffix} />
+                  <span>
+                    {stat.prefix}
+                    {stat.value.toLocaleString('pt-BR')}
+                    {stat.suffix}
+                  </span>
                 </div>
               </div>
             </div>

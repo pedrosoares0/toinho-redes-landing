@@ -201,9 +201,9 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Seletor Segmented Pill Capsule (Estilo Toggle Switch da imagem de referência) */}
+      {/* Seletor Segmented Pill Capsule */}
       <div className="flex items-center justify-center mb-5 sm:mb-7 px-4">
-        <div className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+        <div className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(7,50,193,0.06)]">
           {data.map((item, index) => {
             const isActive = index === currentIndex;
             return (
@@ -213,8 +213,8 @@ export default function ScaleCarousel<ItemT extends ScaleCarouselItem>({
                 className={cn(
                   "relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-sans text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 select-none",
                   isActive
-                    ? "bg-[#0d59f2] text-white shadow-md shadow-blue-600/30 font-black"
-                    : "text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-white/5"
+                    ? "bg-[linear-gradient(90deg,#2b7fff_0%,#0732C1_50%,#2b7fff_100%)] text-white shadow-md shadow-blue-600/35 font-black"
+                    : "text-slate-600 hover:text-brand-blue hover:bg-slate-50"
                 )}
               >
                 {item.name}
