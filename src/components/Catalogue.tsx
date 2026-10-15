@@ -4,7 +4,7 @@ import TextReveal from "./ui/text-reveal";
 
 export default function Catalogue() {
   return (
-    <section id="catalogo" className="py-10 sm:py-14 md:py-16 bg-white dark:bg-brand-darkBlue overflow-hidden relative flex flex-col justify-center transition-colors duration-300">
+    <section id="catalogo" className="py-10 sm:py-14 md:py-16 bg-transparent overflow-hidden relative flex flex-col justify-center transition-colors duration-300">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative z-10 w-full">
         <div className="flex flex-col mb-4 sm:mb-6 relative">
           <motion.div 

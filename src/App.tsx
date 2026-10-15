@@ -41,7 +41,7 @@ function Reveal({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <main className="min-h-screen bg-white dark:bg-brand-darkBlue text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
+    <main className="page-dots min-h-screen bg-white dark:bg-brand-darkBlue text-brand-blue dark:text-white antialiased relative transition-colors duration-300">
         <PillNav
           logo="/favicon.png"
           logoAlt="Toinho Redes"

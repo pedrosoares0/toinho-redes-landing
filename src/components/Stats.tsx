@@ -95,7 +95,7 @@ export default function Stats() {
     <section
       id="sobre"
       ref={sectionRef}
-      className="relative w-full bg-white dark:bg-brand-darkBlue py-16 sm:py-20 md:py-24 text-brand-blue dark:text-white transition-colors duration-300"
+      className="relative w-full bg-transparent py-16 sm:py-20 md:py-24 text-brand-blue dark:text-white transition-colors duration-300"
     >
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6">
         {/* Cabeçalho Editorial Equilibrado */}

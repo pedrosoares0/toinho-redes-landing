@@ -4,7 +4,7 @@ import TextReveal from "./ui/text-reveal";
 
 export default function Gallery() {
   return (
-    <section id="portfolio" className="relative bg-white dark:bg-brand-darkBlue py-10 sm:py-14 md:py-16 transition-colors duration-300 overflow-hidden">
+    <section id="portfolio" className="relative bg-transparent py-10 sm:py-14 md:py-16 transition-colors duration-300 overflow-hidden">
       {/* Cabeçalho */}
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 mb-4 sm:mb-6">
         <div className="relative flex flex-col">

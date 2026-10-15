@@ -1,4 +1,4 @@
-import { useId, useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react';
 
 /** Imagens de teste — trocar pelas fotos reais das quadras depois. */
@@ -14,8 +14,8 @@ const IMAGES = [
 /** Proporções alternadas para o efeito "masonry" (alturas desencontradas entre colunas). */
 const RATIOS = ['aspect-[3/4]', 'aspect-[4/5]', 'aspect-[2/3]', 'aspect-square', 'aspect-[3/5]'];
 
-const COLUMN_COUNT = 7;
-const IMAGES_PER_COLUMN = 8;
+const COLUMN_COUNT = 5;
+const IMAGES_PER_COLUMN = 6;
 
 /**
  * Cada coluna se desloca verticalmente conforme o scroll (parallax).
@@ -27,41 +27,18 @@ const COLUMNS = Array.from({ length: COLUMN_COUNT }, (_, c) => ({
     src: IMAGES[(c * 2 + i) % IMAGES.length],
     ratio: RATIOS[(c + i * 2) % RATIOS.length],
   })),
-  travel: [12, 17, 14, 19, 13, 16, 15][c],
+  travel: [12, 17, 14, 18, 13][c],
   reverse: c % 2 === 1, // colunas alternam: umas sobem, outras descem
 }));
 
 /**
  * Visibilidade por breakpoint: o grid rotacionado é 20% mais largo que a tela,
- * então 4 / 5 / 7 colunas renderizadas ≈ 3 / 4 / 6 colunas visíveis.
+ * então 3 / 4 / 5 colunas renderizadas ≈ 2,5 / 3,3 / 4 colunas visíveis (fotos grandes).
  */
 function columnVisibility(index: number) {
-  if (index >= 5) return 'hidden lg:block';
-  if (index >= 4) return 'hidden md:block';
+  if (index >= 4) return 'hidden lg:block';
+  if (index >= 3) return 'hidden md:block';
   return 'block';
-}
-
-/**
- * Borda superior recortada em ondinhas contínuas (scalloped edge).
- * A "sombra" é uma segunda onda translúcida desenhada no próprio pattern —
- * sem CSS filter, que forçaria repaint sobre as colunas em movimento.
- */
-function ScallopEdge() {
-  const patternId = `scallop-${useId().replace(/:/g, '')}`;
-  return (
-    <svg
-      aria-hidden="true"
-      className="absolute inset-x-0 top-0 z-20 h-[14px] w-full text-white dark:text-brand-darkBlue pointer-events-none"
-    >
-      <defs>
-        <pattern id={patternId} width="24" height="14" patternUnits="userSpaceOnUse">
-          <path d="M0 0H24V5C19 5 17 12 12 12C7 12 5 5 0 5Z" fill="#02081F" fillOpacity="0.12" />
-          <path d="M0 0H24V3C19 3 17 10 12 10C7 10 5 3 0 3Z" fill="currentColor" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="14" fill={`url(#${patternId})`} />
-    </svg>
-  );
 }
 
 function GalleryColumn({
@@ -126,19 +103,14 @@ export default function WaveGallery() {
       ref={sectionRef}
       id="galeria"
       aria-label="Galeria de quadras com redes Toinho"
-      className="relative w-full h-[85vh] min-h-[560px] md:h-[105vh] md:min-h-[720px] md:max-h-[1150px] overflow-hidden bg-brand-blue"
+      className="wave-mask relative w-full h-[85vh] min-h-[560px] md:h-[105vh] md:min-h-[720px] md:max-h-[1150px] overflow-hidden bg-brand-blue"
     >
-      <ScallopEdge />
-
       {/* Grid levemente inclinado e maior que a tela para cobrir os cantos após a rotação */}
-      <div className="absolute -inset-x-[10%] -inset-y-[8%] rotate-[-4deg] grid grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
+      <div className="absolute -inset-x-[10%] -inset-y-[8%] rotate-[-4deg] grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {COLUMNS.map((column, c) => (
           <GalleryColumn key={c} column={column} index={c} progress={progress} />
         ))}
       </div>
-
-      {/* Leve vinheta inferior para assentar a transição com a próxima seção */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-brand-darkBlue/25 to-transparent" />
     </section>
   );
 }

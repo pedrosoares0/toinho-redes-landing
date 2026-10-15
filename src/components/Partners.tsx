@@ -52,7 +52,7 @@ export default function Partners() {
   return (
     <section
       ref={sectionRef}
-      className="py-10 md:py-16 bg-white dark:bg-brand-darkBlue relative overflow-hidden transition-colors duration-300 border-b border-brand-blue/5 dark:border-white/5"
+      className="py-10 md:py-16 bg-transparent relative overflow-hidden transition-colors duration-300 border-b border-brand-blue/5 dark:border-white/5"
     >
       <div className="w-full relative z-10">
         <div className="mb-6 md:mb-8 text-center px-4 max-w-3xl mx-auto">
@@ -74,13 +74,10 @@ export default function Partners() {
           </p>
         </div>
 
-        <div className="relative flex flex-col gap-4 sm:gap-6 overflow-hidden py-4 md:py-8">
+        {/* Fade lateral via máscara (transparente de verdade, preserva o pontilhado do fundo) */}
+        <div className="relative flex flex-col gap-4 sm:gap-6 overflow-hidden py-4 md:py-8 [mask-image:linear-gradient(to_right,transparent,#000_6rem,#000_calc(100%_-_6rem),transparent)] md:[mask-image:linear-gradient(to_right,transparent,#000_12rem,#000_calc(100%_-_12rem),transparent)]">
           <MarqueeRow items={row1} paused={!inView} />
           <MarqueeRow items={row2} reverse paused={!inView} />
-
-          {/* Gradientes de fade lateral suaves e elegantes */}
-          <div className="absolute inset-y-0 left-0 w-24 md:w-48 z-20 pointer-events-none bg-gradient-to-r from-white dark:from-brand-darkBlue to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-24 md:w-48 z-20 pointer-events-none bg-gradient-to-l from-white dark:from-brand-darkBlue to-transparent" />
         </div>
       </div>
     </section>
