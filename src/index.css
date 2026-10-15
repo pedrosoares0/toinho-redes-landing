@@ -127,6 +127,58 @@ footer[id] {
   animation: cosmic-spin-slow 5s linear infinite;
 }
 
+/* ---------- Stats: números levemente 3D ----------
+ * drop-shadows empilhados (cada um desloca 1px a sombra do anterior) criam uma
+ * extrusão sólida que funciona com texto em gradiente (bg-clip-text). */
+.stat-number-3d {
+  filter:
+    drop-shadow(0 1px 0 #0a3fd6)
+    drop-shadow(0 1px 0 #0835b8)
+    drop-shadow(0 1px 0 #062b99)
+    drop-shadow(0 1px 0 #04217a)
+    drop-shadow(0 0 0 rgba(3, 26, 99, 0))
+    drop-shadow(0 10px 12px rgba(7, 50, 193, 0.28));
+  transform: translateY(-2px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease;
+}
+.group:hover .stat-number-3d {
+  filter:
+    drop-shadow(0 1px 0 #0a3fd6)
+    drop-shadow(0 1px 0 #0835b8)
+    drop-shadow(0 1px 0 #062b99)
+    drop-shadow(0 1px 0 #04217a)
+    drop-shadow(0 1px 0 #031a63)
+    drop-shadow(0 16px 16px rgba(7, 50, 193, 0.32));
+  transform: translateY(-4px);
+}
+
+/* ---------- Galeria ondulada: colunas infinitas ---------- */
+.wave-gallery-track {
+  animation: wave-gallery-up var(--wg-duration, 40s) linear infinite;
+  animation-delay: var(--wg-delay, 0s);
+  will-change: transform;
+}
+.wave-gallery-track[data-reverse='true'] {
+  animation-name: wave-gallery-down;
+}
+.wave-gallery[data-paused='true'] .wave-gallery-track,
+.wave-gallery-col:hover .wave-gallery-track {
+  animation-play-state: paused;
+}
+@keyframes wave-gallery-up {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -50%, 0); }
+}
+@keyframes wave-gallery-down {
+  from { transform: translate3d(0, -50%, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wave-gallery-track {
+    animation: none;
+  }
+}
+
 /* Oculta qualquer badge, drawer de deploy preview ou widget injetado pelo Netlify */
 #netlify-badge,
 .netlify-badge,

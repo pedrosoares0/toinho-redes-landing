@@ -5,6 +5,7 @@ import Partners from './components/Partners'
 import Gallery from './components/Gallery'
 import Catalogue from './components/Catalogue'
 import Stats from './components/Stats'
+import WaveGallery from './components/WaveGallery'
 import FAQ from './components/FAQ'
 import Footer from './components/Footer'
 import TextLoop from './components/TextLoop'
@@ -86,6 +87,8 @@ function App() {
         </Reveal>
         {/* Seção de Autoridade & Estatísticas */}
         <Stats />
+        {/* Galeria em colunas inclinadas com borda ondulada */}
+        <WaveGallery />
         <FAQ />
         <Footer />
       </main>

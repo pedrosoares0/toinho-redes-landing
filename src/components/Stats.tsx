@@ -160,7 +160,7 @@ export default function Stats() {
 
               {/* Número Gigante na base com contagem rápida em azul escuro perfeitamente centralizado */}
               <div className="relative z-10 mt-8 pt-2 w-full flex items-baseline justify-center text-center">
-                <div className="font-avenue font-black text-7xl sm:text-8xl lg:text-[5.25rem] xl:text-[6.5rem] 2xl:text-[7.5rem] tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent drop-shadow-sm whitespace-nowrap text-center">
+                <div className="font-avenue font-black text-7xl sm:text-8xl lg:text-[5.25rem] xl:text-[6.5rem] 2xl:text-[7.5rem] tracking-tighter leading-none bg-gradient-to-b from-[#0732C1] via-[#1371F9] to-[#0732C1] bg-clip-text text-transparent stat-number-3d whitespace-nowrap text-center">
                   <CountUp end={stat.value} start={isInView} prefix={stat.prefix} suffix={stat.suffix} />
                 </div>
               </div>
