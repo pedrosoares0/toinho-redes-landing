@@ -19,8 +19,11 @@ type Column = { images: { src: string; ratio: string }[]; travel: number; revers
 function buildColumns(sizes: number[], travels: number[]): Column[] {
   let cursor = 0;
   return sizes.map((count, c) => {
+    // Proporções equilibradas (quadradas e 4:3) para a segunda fileira aparecer inteira
     const ratios =
-      count <= 2 ? ['aspect-[2/3]', 'aspect-[3/5]'] : ['aspect-[3/4]', 'aspect-[4/5]', 'aspect-[3/4]', 'aspect-[4/5]', 'aspect-[3/4]'];
+      count <= 2
+        ? ['aspect-square', 'aspect-[4/3]']
+        : ['aspect-[4/3]', 'aspect-square', 'aspect-[4/3]'];
     const images = Array.from({ length: count }, (_, i) => ({
       src: IMAGES[cursor++],
       ratio: ratios[i % ratios.length],
@@ -30,9 +33,9 @@ function buildColumns(sizes: number[], travels: number[]): Column[] {
 }
 
 const LAYOUT_CONFIGS = {
-  2: { className: 'grid-cols-2', columns: buildColumns([5, 4], [10, 14]) },
-  3: { className: 'grid-cols-3', columns: buildColumns([3, 3, 3], [10, 14, 11]) },
-  4: { className: 'grid-cols-4', columns: buildColumns([3, 2, 2, 2], [10, 9, 8, 9]) },
+  2: { className: 'grid-cols-2', columns: buildColumns([5, 4], [18, 22]) },
+  3: { className: 'grid-cols-3', columns: buildColumns([3, 3, 3], [22, 18, 20]) },
+  4: { className: 'grid-cols-4', columns: buildColumns([3, 2, 2, 2], [24, 20, 22, 18]) },
 };
 
 function useLayoutCols(): 2 | 3 | 4 {
@@ -100,7 +103,7 @@ export default function WaveGallery() {
       ref={sectionRef}
       id="galeria"
       aria-label="Galeria de quadras com redes Toinho"
-      className="wave-mask relative w-full h-[80vh] min-h-[520px] md:h-[90vh] md:min-h-[680px] md:max-h-[980px] overflow-hidden bg-brand-blue"
+      className="wave-mask relative w-full h-[85vh] min-h-[580px] md:h-[100vh] md:min-h-[750px] md:max-h-[1050px] overflow-hidden bg-brand-blue"
     >
       {/* Grid único ativo renderizado no DOM (elimina nós duplicados e acelera GPU) */}
       <div className={`absolute -inset-x-[10%] -inset-y-[12%] rotate-[-4deg] grid ${layout.className}`}>
