@@ -170,14 +170,14 @@ footer[id] {
     linear-gradient(#000 0 0) center / 100% calc(100% - 2 * var(--wave-h) + 2px) no-repeat;
 }
 
-/* ---------- Fundo da página: pontilhado bem discreto ---------- */
+/* ---------- Fundo da página: pontilhado no background ---------- */
 .page-dots {
-  background-image: radial-gradient(rgba(7, 50, 193, 0.11) 1px, transparent 1.3px);
-  background-size: 22px 22px;
+  background-image: radial-gradient(rgba(7, 50, 193, 0.22) 1.2px, transparent 1.5px);
+  background-size: 24px 24px;
   background-position: center top;
 }
 .dark .page-dots {
-  background-image: radial-gradient(rgba(128, 194, 253, 0.08) 1px, transparent 1.3px);
+  background-image: radial-gradient(rgba(128, 194, 253, 0.18) 1.2px, transparent 1.5px);
 }
 
 /* Oculta qualquer badge, drawer de deploy preview ou widget injetado pelo Netlify */
