@@ -3,15 +3,15 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform, type Moti
 
 /** Imagens de teste (9 únicas) — trocar pelas fotos reais das quadras depois. */
 const IMAGES = [
-  'https://i.pinimg.com/736x/84/ea/eb/84eaeb559c2fcde8ff9c6cf4b704ab08.jpg',
-  'https://i.pinimg.com/736x/5a/b2/1e/5ab21ea4c3984ebbf6b1b7fa8eee11b8.jpg',
-  'https://i.pinimg.com/736x/64/05/15/6405159aeea8b8fb7bc48ea7c34fd591.jpg',
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJBB-1eNzNMpzF9FF-U9J8dKHlyEfQhTUKl-PR3VSSjr4X5PzUvXAYeMk&s=10',
   'https://i.pinimg.com/736x/e7/2b/98/e72b98b6322ee37cb009bf1c763c043d.jpg',
-  'https://i.pinimg.com/1200x/d8/8a/97/d88a97dbb18e57958f4a495426057d00.jpg',
   'https://i.pinimg.com/736x/45/9a/9f/459a9f54b32dd5bfa8f7cb82f7f5e151.jpg',
+  'https://i.pinimg.com/1200x/d8/8a/97/d88a97dbb18e57958f4a495426057d00.jpg',
+  'https://i.pinimg.com/736x/5a/b2/1e/5ab21ea4c3984ebbf6b1b7fa8eee11b8.jpg',
+  'https://i.pinimg.com/736x/84/ea/eb/84eaeb559c2fcde8ff9c6cf4b704ab08.jpg',
   'https://i.pinimg.com/1200x/66/ba/69/66ba699e00a8bddaf1f8ccb83169f055.jpg',
   'https://i.pinimg.com/736x/13/b9/cf/13b9cf9ce6008271b2cd5c9a948c986c.jpg',
+  'https://i.pinimg.com/736x/64/05/15/6405159aeea8b8fb7bc48ea7c34fd591.jpg',
 ];
 
 type Column = { images: { src: string; ratio: string }[]; travel: number; reverse: boolean };
