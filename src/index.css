@@ -152,33 +152,6 @@ footer[id] {
   transform: translateY(-4px);
 }
 
-/* ---------- Galeria ondulada: colunas infinitas ---------- */
-.wave-gallery-track {
-  animation: wave-gallery-up var(--wg-duration, 40s) linear infinite;
-  animation-delay: var(--wg-delay, 0s);
-  will-change: transform;
-}
-.wave-gallery-track[data-reverse='true'] {
-  animation-name: wave-gallery-down;
-}
-.wave-gallery[data-paused='true'] .wave-gallery-track,
-.wave-gallery-col:hover .wave-gallery-track {
-  animation-play-state: paused;
-}
-@keyframes wave-gallery-up {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(0, -50%, 0); }
-}
-@keyframes wave-gallery-down {
-  from { transform: translate3d(0, -50%, 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .wave-gallery-track {
-    animation: none;
-  }
-}
-
 /* Oculta qualquer badge, drawer de deploy preview ou widget injetado pelo Netlify */
 #netlify-badge,
 .netlify-badge,

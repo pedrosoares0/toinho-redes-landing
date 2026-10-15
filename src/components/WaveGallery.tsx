@@ -1,5 +1,5 @@
-import { useId, useRef, type CSSProperties } from 'react';
-import { useInView } from 'motion/react';
+import { useId, useRef } from 'react';
+import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react';
 
 /** Imagens de teste — trocar pelas fotos reais das quadras depois. */
 const IMAGES = [
@@ -15,16 +15,20 @@ const IMAGES = [
 const RATIOS = ['aspect-[3/4]', 'aspect-[4/5]', 'aspect-[2/3]', 'aspect-square', 'aspect-[3/5]'];
 
 const COLUMN_COUNT = 7;
-const IMAGES_PER_COLUMN = 5;
+const IMAGES_PER_COLUMN = 8;
 
+/**
+ * Cada coluna se desloca verticalmente conforme o scroll (parallax).
+ * `travel` = quanto (em % da altura da própria coluna) ela percorre durante toda a passagem
+ * da seção pela tela — valores baixos deixam o movimento lento e suave.
+ */
 const COLUMNS = Array.from({ length: COLUMN_COUNT }, (_, c) => ({
   images: Array.from({ length: IMAGES_PER_COLUMN }, (_, i) => ({
     src: IMAGES[(c * 2 + i) % IMAGES.length],
     ratio: RATIOS[(c + i * 2) % RATIOS.length],
   })),
-  duration: 46 + (c % 3) * 9, // velocidades levemente diferentes
-  delay: -(c * 6.5), // começa cada coluna num ponto diferente do loop
-  reverse: c % 2 === 1, // colunas alternam subindo / descendo
+  travel: [12, 17, 14, 19, 13, 16, 15][c],
+  reverse: c % 2 === 1, // colunas alternam: umas sobem, outras descem
 }));
 
 /**
@@ -37,76 +41,99 @@ function columnVisibility(index: number) {
   return 'block';
 }
 
-/** Borda superior recortada em ondinhas contínuas (scalloped edge). */
+/**
+ * Borda superior recortada em ondinhas contínuas (scalloped edge).
+ * A "sombra" é uma segunda onda translúcida desenhada no próprio pattern —
+ * sem CSS filter, que forçaria repaint sobre as colunas em movimento.
+ */
 function ScallopEdge() {
   const patternId = `scallop-${useId().replace(/:/g, '')}`;
   return (
     <svg
       aria-hidden="true"
-      className="absolute inset-x-0 top-0 z-20 h-[12px] w-full text-white dark:text-brand-darkBlue pointer-events-none [filter:drop-shadow(0_3px_4px_rgba(2,8,31,0.18))]"
+      className="absolute inset-x-0 top-0 z-20 h-[14px] w-full text-white dark:text-brand-darkBlue pointer-events-none"
     >
       <defs>
-        <pattern id={patternId} width="24" height="12" patternUnits="userSpaceOnUse">
+        <pattern id={patternId} width="24" height="14" patternUnits="userSpaceOnUse">
+          <path d="M0 0H24V5C19 5 17 12 12 12C7 12 5 5 0 5Z" fill="#02081F" fillOpacity="0.12" />
           <path d="M0 0H24V3C19 3 17 10 12 10C7 10 5 3 0 3Z" fill="currentColor" />
         </pattern>
       </defs>
-      <rect width="100%" height="12" fill={`url(#${patternId})`} />
+      <rect width="100%" height="14" fill={`url(#${patternId})`} />
     </svg>
+  );
+}
+
+function GalleryColumn({
+  column,
+  index,
+  progress,
+}: {
+  column: (typeof COLUMNS)[number];
+  index: number;
+  progress: MotionValue<number>;
+}) {
+  // Sobe: 0% → -travel% | Desce: -travel% → 0% (nunca abre buraco no topo da coluna)
+  const y = useTransform(
+    progress,
+    [0, 1],
+    column.reverse ? [`-${column.travel}%`, '0%'] : ['0%', `-${column.travel}%`]
+  );
+
+  return (
+    <div className={`relative overflow-hidden ${columnVisibility(index)}`}>
+      <motion.div className="flex flex-col will-change-transform" style={{ y }}>
+        {column.images.map((img, i) => (
+          <figure key={i} className={`relative w-full ${img.ratio} overflow-hidden m-0`}>
+            <img
+              src={img.src}
+              alt="Quadra equipada com rede Toinho Redes"
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </figure>
+        ))}
+      </motion.div>
+    </div>
   );
 }
 
 export default function WaveGallery() {
   const sectionRef = useRef<HTMLElement>(null);
-  // Pausa as animações fora da viewport (economia de GPU/bateria)
-  const isInView = useInView(sectionRef, { amount: 0 });
+  const reduceMotion = useReducedMotion();
+
+  // Progresso de 0 → 1 enquanto a seção atravessa a viewport (entra por baixo, sai por cima)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+
+  // Mola leve por cima do scroll: movimento sedoso e com leve inércia, sem "degraus"
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 22,
+    mass: 0.6,
+    restDelta: 0.0005,
+  });
+
+  const progress = reduceMotion ? scrollYProgress : smoothProgress;
 
   return (
     <section
       ref={sectionRef}
       id="galeria"
       aria-label="Galeria de quadras com redes Toinho"
-      data-paused={!isInView}
-      className="wave-gallery relative w-full h-[70vh] min-h-[480px] md:h-[85vh] md:max-h-[920px] overflow-hidden bg-brand-blue"
+      className="relative w-full h-[85vh] min-h-[560px] md:h-[105vh] md:min-h-[720px] md:max-h-[1150px] overflow-hidden bg-brand-blue"
     >
       <ScallopEdge />
 
       {/* Grid levemente inclinado e maior que a tela para cobrir os cantos após a rotação */}
-      <div className="absolute -inset-x-[10%] -inset-y-[25%] rotate-[-4deg] grid grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
+      <div className="absolute -inset-x-[10%] -inset-y-[8%] rotate-[-4deg] grid grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
         {COLUMNS.map((column, c) => (
-          <div key={c} className={`wave-gallery-col relative overflow-hidden ${columnVisibility(c)}`}>
-            <div
-              className="wave-gallery-track flex flex-col"
-              data-reverse={column.reverse}
-              style={
-                {
-                  '--wg-duration': `${column.duration}s`,
-                  '--wg-delay': `${column.delay}s`,
-                } as CSSProperties
-              }
-            >
-              {/* Conteúdo duplicado = loop infinito sem emenda (translateY 0 → -50%) */}
-              {[0, 1].map((copy) =>
-                column.images.map((img, i) => (
-                  <figure
-                    key={`${copy}-${i}`}
-                    aria-hidden={copy === 1}
-                    className={`group relative w-full ${img.ratio} overflow-hidden m-0`}
-                  >
-                    <img
-                      src={img.src}
-                      alt={copy === 0 ? 'Quadra equipada com rede Toinho Redes' : ''}
-                      loading="lazy"
-                      decoding="async"
-                      referrerPolicy="no-referrer"
-                      draggable={false}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
-                    />
-                    <div className="absolute inset-0 bg-brand-darkBlue/0 transition-colors duration-500 group-hover:bg-brand-darkBlue/10" />
-                  </figure>
-                ))
-              )}
-            </div>
-          </div>
+          <GalleryColumn key={c} column={column} index={c} progress={progress} />
         ))}
       </div>
 
