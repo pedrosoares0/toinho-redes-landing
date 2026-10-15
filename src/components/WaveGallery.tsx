@@ -1,56 +1,75 @@
 import { useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react';
 
-/** Imagens de teste — trocar pelas fotos reais das quadras depois. */
-const IMAGES = [
-  'https://i.pinimg.com/736x/84/ea/eb/84eaeb559c2fcde8ff9c6cf4b704ab08.jpg',
-  'https://i.pinimg.com/736x/5a/b2/1e/5ab21ea4c3984ebbf6b1b7fa8eee11b8.jpg',
-  'https://i.pinimg.com/736x/64/05/15/6405159aeea8b8fb7bc48ea7c34fd591.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJBB-1eNzNMpzF9FF-U9J8dKHlyEfQhTUKl-PR3VSSjr4X5PzUvXAYeMk&s=10',
-  'https://i.pinimg.com/736x/e7/2b/98/e72b98b6322ee37cb009bf1c763c043d.jpg',
-  'https://i.pinimg.com/1200x/d8/8a/97/d88a97dbb18e57958f4a495426057d00.jpg',
+/**
+ * 9 imagens únicas fornecidas pelo usuário — NENHUMA repetição.
+ * Distribuídas em 3 colunas de 3 imagens cada (total = 9 imagens).
+ */
+const COLUMNS = [
+  {
+    travel: 10,
+    reverse: false,
+    images: [
+      {
+        src: 'https://i.pinimg.com/736x/84/ea/eb/84eaeb559c2fcde8ff9c6cf4b704ab08.jpg',
+        ratio: 'aspect-[3/4]',
+      },
+      {
+        src: 'https://i.pinimg.com/736x/5a/b2/1e/5ab21ea4c3984ebbf6b1b7fa8eee11b8.jpg',
+        ratio: 'aspect-[4/5]',
+      },
+      {
+        src: 'https://i.pinimg.com/736x/64/05/15/6405159aeea8b8fb7bc48ea7c34fd591.jpg',
+        ratio: 'aspect-[3/4]',
+      },
+    ],
+  },
+  {
+    travel: 14,
+    reverse: true,
+    images: [
+      {
+        src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJBB-1eNzNMpzF9FF-U9J8dKHlyEfQhTUKl-PR3VSSjr4X5PzUvXAYeMk&s=10',
+        ratio: 'aspect-[4/5]',
+      },
+      {
+        src: 'https://i.pinimg.com/736x/e7/2b/98/e72b98b6322ee37cb009bf1c763c043d.jpg',
+        ratio: 'aspect-[2/3]',
+      },
+      {
+        src: 'https://i.pinimg.com/1200x/d8/8a/97/d88a97dbb18e57958f4a495426057d00.jpg',
+        ratio: 'aspect-[4/5]',
+      },
+    ],
+  },
+  {
+    travel: 10,
+    reverse: false,
+    images: [
+      {
+        src: 'https://i.pinimg.com/736x/45/9a/9f/459a9f54b32dd5bfa8f7cb82f7f5e151.jpg',
+        ratio: 'aspect-[3/4]',
+      },
+      {
+        src: 'https://i.pinimg.com/1200x/66/ba/69/66ba699e00a8bddaf1f8ccb83169f055.jpg',
+        ratio: 'aspect-[4/5]',
+      },
+      {
+        src: 'https://i.pinimg.com/736x/13/b9/cf/13b9cf9ce6008271b2cd5c9a948c986c.jpg',
+        ratio: 'aspect-[3/4]',
+      },
+    ],
+  },
 ];
-
-/** Proporções alternadas para o efeito "masonry" (alturas desencontradas entre colunas). */
-const RATIOS = ['aspect-[3/4]', 'aspect-[4/5]', 'aspect-[2/3]', 'aspect-square', 'aspect-[3/5]'];
-
-const COLUMN_COUNT = 5;
-const IMAGES_PER_COLUMN = 6;
-
-/**
- * Cada coluna se desloca verticalmente conforme o scroll (parallax).
- * `travel` = quanto (em % da altura da própria coluna) ela percorre durante toda a passagem
- * da seção pela tela — valores baixos deixam o movimento lento e suave.
- */
-const COLUMNS = Array.from({ length: COLUMN_COUNT }, (_, c) => ({
-  images: Array.from({ length: IMAGES_PER_COLUMN }, (_, i) => ({
-    src: IMAGES[(c * 2 + i) % IMAGES.length],
-    ratio: RATIOS[(c + i * 2) % RATIOS.length],
-  })),
-  travel: [12, 17, 14, 18, 13][c],
-  reverse: c % 2 === 1, // colunas alternam: umas sobem, outras descem
-}));
-
-/**
- * Visibilidade por breakpoint: o grid rotacionado é 20% mais largo que a tela,
- * então 3 / 4 / 5 colunas renderizadas ≈ 2,5 / 3,3 / 4 colunas visíveis (fotos grandes).
- */
-function columnVisibility(index: number) {
-  if (index >= 4) return 'hidden lg:block';
-  if (index >= 3) return 'hidden md:block';
-  return 'block';
-}
 
 function GalleryColumn({
   column,
-  index,
   progress,
 }: {
   column: (typeof COLUMNS)[number];
-  index: number;
   progress: MotionValue<number>;
 }) {
-  // Sobe: 0% → -travel% | Desce: -travel% → 0% (nunca abre buraco no topo da coluna)
+  // Sobe: 0% → -travel% | Desce: -travel% → 0% (movimento suave e sutil)
   const y = useTransform(
     progress,
     [0, 1],
@@ -58,10 +77,13 @@ function GalleryColumn({
   );
 
   return (
-    <div className={`relative overflow-hidden ${columnVisibility(index)}`}>
+    <div className="relative overflow-hidden w-full">
       <motion.div className="flex flex-col will-change-transform" style={{ y }}>
         {column.images.map((img, i) => (
-          <figure key={i} className={`relative w-full ${img.ratio} overflow-hidden m-0`}>
+          <figure
+            key={i}
+            className={`relative w-full ${img.ratio} min-h-[220px] sm:min-h-[280px] md:min-h-[380px] overflow-hidden m-0`}
+          >
             <img
               src={img.src}
               alt="Quadra equipada com rede Toinho Redes"
@@ -82,13 +104,13 @@ export default function WaveGallery() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
 
-  // Progresso de 0 → 1 enquanto a seção atravessa a viewport (entra por baixo, sai por cima)
+  // Progresso de 0 → 1 enquanto a seção atravessa a viewport
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
 
-  // Mola leve por cima do scroll: movimento sedoso e com leve inércia, sem "degraus"
+  // Mola leve por cima do scroll: movimento sedoso e com leve inércia, sem solavancos
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 60,
     damping: 22,
@@ -103,12 +125,12 @@ export default function WaveGallery() {
       ref={sectionRef}
       id="galeria"
       aria-label="Galeria de quadras com redes Toinho"
-      className="wave-mask relative w-full h-[85vh] min-h-[560px] md:h-[105vh] md:min-h-[720px] md:max-h-[1150px] overflow-hidden bg-brand-blue"
+      className="wave-mask relative w-full h-[75vh] min-h-[500px] md:h-[95vh] md:min-h-[680px] md:max-h-[1050px] overflow-hidden bg-brand-blue"
     >
-      {/* Grid levemente inclinado e maior que a tela para cobrir os cantos após a rotação */}
-      <div className="absolute -inset-x-[10%] -inset-y-[8%] rotate-[-4deg] grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {/* Grid inclinado cobrindo toda a largura sem gaps */}
+      <div className="absolute -inset-x-[10%] -inset-y-[12%] rotate-[-4deg] grid grid-cols-3">
         {COLUMNS.map((column, c) => (
-          <GalleryColumn key={c} column={column} index={c} progress={progress} />
+          <GalleryColumn key={c} column={column} progress={progress} />
         ))}
       </div>
     </section>
